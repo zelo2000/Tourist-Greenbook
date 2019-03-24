@@ -9,6 +9,10 @@ namespace TGB.Core.Model
     public class Trip
     {
         /// <summary>
+        /// Trip id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// List of places the user visited in this trip
         /// </summary>
         public List<Place> Places { get; set; }
