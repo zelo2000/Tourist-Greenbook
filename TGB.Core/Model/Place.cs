@@ -6,15 +6,39 @@ using TGB.Core.Utility;
 
 namespace TGB.Core.Model
 {
+    /// <summary>
+    /// Сlass to work with the places
+    /// </summary>
     public class Place
     {
-        string Name { get; set; }
-        string Type { get; set; }
-        string City { get; set; }
-        string Address { get; set; }
-        TimeInterval WorkTime { get; set; }
-        Point Coordinates { get; set; }
-        PlaceState State { get; set; }
+        /// <summary>
+        /// Place name
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// Place type
+        /// </summary>
+        public string Type { get; set; }
+        /// <summary>
+        /// Сity in which place is located
+        /// </summary>
+        public string City { get; set; }
+        /// <summary>
+        /// Place Address
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
+        /// Place working time
+        /// </summary>
+        public TimeInterval WorkTime { get; set; }
+        /// <summary>
+        /// Place coordinates
+        /// </summary>
+        public Point Coordinates { get; set; }
+        /// <summary>
+        /// Place state
+        /// </summary>
+        public PlaceState State { get; set; }
 
         public Place() { }
     }
