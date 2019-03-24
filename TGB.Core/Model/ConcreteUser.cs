@@ -10,6 +10,10 @@ namespace TGB.Core.Model
     public class ConcreteUser : AbstractUser
     {
         /// <summary>
+        /// User id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// List of user trips
         /// </summary>
         List<Trip> Trips { get; set; }
