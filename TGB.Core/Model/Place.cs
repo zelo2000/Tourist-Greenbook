@@ -12,6 +12,10 @@ namespace TGB.Core.Model
     public class Place
     {
         /// <summary>
+        /// Place id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// Place name
         /// </summary>
         public string Name { get; set; }
@@ -39,6 +43,14 @@ namespace TGB.Core.Model
         /// Place state
         /// </summary>
         public PlaceState State { get; set; }
+        /// <summary>
+        /// Place description
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// Place rating
+        /// </summary>
+        public double Rating { get; set; }
 
         public Place() { }
     }
