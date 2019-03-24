@@ -10,6 +10,10 @@ namespace TGB.Core.Model
     public class Administrator : AbstractUser
     {
         /// <summary>
+        /// Admin id
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// City in which administrator can confirm places
         /// </summary>
         string City { get; set; }
