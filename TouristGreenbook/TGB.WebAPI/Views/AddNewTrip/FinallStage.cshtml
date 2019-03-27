@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Finall stage";
+}
+
+<p>
+    @ViewBag.City;
+    @ViewBag.Start;
+    @ViewBag.Finish;
+    @ViewBag.Budget;
+    @{
+        foreach (var tag in ViewBag.ChosenTags)
+        {
+            <i>@tag</i>
+        }
+    }
+</p>

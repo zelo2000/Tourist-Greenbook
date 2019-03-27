@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Initial Stage";
+}
+
+<form action="/AddNewTrip/FinallStage" method="post">
+    <select name="city">
+        @{
+            foreach (var city in ViewBag.Cities)
+            {
+                <option>@city</option>
+            }
+        }
+    </select>
+    <input type="date" name="start" />
+    <input type="date" name="finish" />
+    <input type="number" name="budget" />
+    <select name="tags" multiple="multiple">
+        @{
+            foreach (var tag in ViewBag.Tags)
+            {
+                <option>@tag</option>
+            }
+        }
+    </select>
+    <input type="submit" name="submit" />
+</form>
