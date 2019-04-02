@@ -40,6 +40,10 @@ namespace TGB.WebAPI.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "User name")]
+            public string UserName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -66,8 +70,9 @@ namespace TGB.WebAPI.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new IdentityUser { UserName = Input.UserName, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                result = await _userManager.AddToRoleAsync(user, "User");
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
