@@ -11,9 +11,15 @@
             }
         }
     </select>
-    <input type="date" name="start" />
-    <input type="date" name="finish" />
+    <br />
+    <input type="date" name="startDate" />
+    <input type="time" name="startTime" />
+    <br />
+    <input type="date" name="finishDate" />
+    <input type="time" name="finishTime" />
+    <br />
     <input type="number" name="budget" />
+    <br />
     <select name="tags" multiple="multiple">
         @{
             foreach (var tag in ViewBag.Tags)
@@ -22,5 +28,6 @@
             }
         }
     </select>
+    <br />
     <input type="submit" name="submit" />
 </form>

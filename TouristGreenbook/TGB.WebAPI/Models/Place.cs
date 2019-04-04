@@ -32,11 +32,11 @@ namespace TGB.WebAPI.Models
         /// <summary>
         /// Place working start time
         /// </summary>
-        public DateTime WorkTimeStart { get; set; }
+        public TimeSpan WorkTimeStart { get; set; }
         /// <summary>
         /// Place working finish time
         /// </summary>
-        public DateTime WorkTimeFinish { get; set; }
+        public TimeSpan WorkTimeFinish { get; set; }
         /// <summary>
         /// Place coordinates
         /// </summary>

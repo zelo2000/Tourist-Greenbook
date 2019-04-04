@@ -4,13 +4,18 @@
 
 <p>
     @ViewBag.City;
+    <br />
     @ViewBag.Start;
+    <br />
     @ViewBag.Finish;
+    <br />
     @ViewBag.Budget;
+    <br />
     @{
         foreach (var tag in ViewBag.ChosenTags)
         {
             <i>@tag</i>
+            <br />
         }
     }
 </p>
