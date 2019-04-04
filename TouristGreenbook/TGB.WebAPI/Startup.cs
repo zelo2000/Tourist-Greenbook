@@ -37,14 +37,14 @@ namespace TGB.WebAPI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -69,6 +69,49 @@ namespace TGB.WebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            var _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var _userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            string[] roleNames = { "Admin", "User" };
+            IdentityResult roleResult;
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            IdentityUser user1 = await _userManager.FindByEmailAsync("testuser1@gmail.com");
+
+            if (user1 == null)
+            {
+                user1 = new IdentityUser()
+                {
+                    UserName = "testuser1",
+                    Email = "testuser1@gmail.com",
+                };
+                await _userManager.CreateAsync(user1, "Testuser1@123");
+            }
+            await _userManager.AddToRoleAsync(user1, "User");
+
+            IdentityUser user2 = await _userManager.FindByEmailAsync("testuser2@gmail.com");
+
+            if (user2 == null)
+            {
+                user2 = new IdentityUser()
+                {
+                    UserName = "testuser2",
+                    Email = "testuser2@gmail.com",
+                };
+                await _userManager.CreateAsync(user2, "Testuser2@123");
+            }
+            await _userManager.AddToRoleAsync(user2, "User");
         }
     }
 }
