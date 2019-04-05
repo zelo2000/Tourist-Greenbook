@@ -11,6 +11,7 @@ namespace TGB.WebAPI.Controllers
     {
         private static Trip tempTrip;
         private static List<Trip> tripList;
+        
         public IActionResult Index()
         {
             //var tripList = new List<Trip>();
@@ -30,7 +31,7 @@ namespace TGB.WebAPI.Controllers
             {
                 //if (id>0 && id<=tripList.Count)
                 {
-                    return View(tripList.[(int) id-1]);
+                    return View(tripList[(int) id-1]);
                 }
             }
             
