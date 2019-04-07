@@ -3,39 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TGB.WebAPI.Data;
 using TGB.WebAPI.Models;
 
 namespace TGB.WebAPI.Controllers
 {
     public class YourTripsController : Controller
     {
-        private static Trip tempTrip;
-        private static List<Trip> tripList;
-        
+        public YourTripsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: /<controller>/
         public IActionResult Index()
         {
-            //var tripList = new List<Trip>();
-            tripList = new List<Trip>();
-            tripList.Add(new Trip{Id=1,Budget=100,City="Lviv"});
-            // TODO load Trips from DataBase
+            var tripList = _context.Trips.ToList();
             return View(tripList);
         }
 
+        // GET: /<controller>/
         public IActionResult Trip(int? id)
         {
-            //ViewData["id"] = id;
-
-            //tempTrip= = id;
-            // TODO load Trip by ID from database
-            //if (id.HasValue)
+            Trip trip;
+            if (id != null)
             {
-                //if (id>0 && id<=tripList.Count)
-                {
-                    return View(tripList[(int) id-1]);
-                }
+                trip = _context.Trips.Where(x => x.Id == id).First();
             }
-            
-            //return string "Wrong trip Id";
+            else
+            {
+                trip = new Trip();
+            }
+            return View(trip);
         }
+
+        private readonly ApplicationDbContext _context;
     }
 }

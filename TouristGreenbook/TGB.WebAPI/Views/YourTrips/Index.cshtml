@@ -1,13 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Your Trips";
+    ViewData["Title"] = "Your trips";
 }
 
 @model List<Trip>
 
-<h2>Your saved Trips</h2>
+<h2>Your trips</h2>
 
-@foreach (var trip in Model)
-{
-    <li><a href="YourTrips/Trip/?id=@trip.Id">@trip.Id</a></li>
-}
+<ul>
+    @foreach (var trip in Model)
+    {
+        <li><a href="YourTrips/Trip/?id=@trip.Id">@trip.Id @trip.City</a></li>
+    }
 
+    <li><a href="">+</a></li>
+</ul>
