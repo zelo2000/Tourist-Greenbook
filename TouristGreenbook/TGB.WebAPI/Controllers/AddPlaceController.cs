@@ -24,11 +24,30 @@ namespace TGB.WebAPI.Controllers
             return View();
         }
         [HttpPost]
-        public string AddingNewPlaceFromUser(Place place)
+        public string AddingNewPlaceFromUser(string name, string type, string city, string address, TimeSpan workTimeStart, TimeSpan workTimeFinish, double latitude, double longtitude, string description)
         {
-            _context.Places.Add(place);
+            Point newPoint = new Point(latitude, longtitude);
+            Place newPlace = new Place();
+            newPlace.Name = name;
+            newPlace.Type = type;
+            newPlace.City = city;
+            newPlace.Address = address;
+            newPlace.WorkTimeStart = workTimeStart;
+            newPlace.WorkTimeFinish = workTimeFinish;
+            newPlace.Coordinates = newPoint;
+            newPlace.Description = description;
+            _context.Places.Add(newPlace);
             _context.SaveChanges();
+
             return "Thank you for helping us!";
+        }
+
+        public IActionResult ShowPlaces()
+        {
+            List<Place> PlacesToShow = _context.Places
+    .Select(c => new Place { Id = c.Id, Name = c.Name, Address = c.Address, City = c.City,  })
+    .ToList();
+            return View(PlacesToShow);
         }
 
         private readonly ApplicationDbContext _context;
