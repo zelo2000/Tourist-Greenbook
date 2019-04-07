@@ -12,48 +12,45 @@ namespace TGB.WebAPI.Controllers
 {
     public class AddPlaceController : Controller
     {
+        public AddPlaceController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // GET: /<controller>/
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpGet]
+        // GET: /<controller>/
         public IActionResult AddingNewPlaceFromUser()
         {
             return View();
         }
+
+        // POST: /<controller>/
         [HttpPost]
-        public string AddingNewPlaceFromUser(string name, string type, string city, string address, TimeSpan workTimeStart, TimeSpan workTimeFinish, double latitude, double longtitude, string description)
+        public IActionResult AddingPlaceToDataBase(string name, string type, string city, string address, TimeSpan workTimeStart, TimeSpan workTimeFinish, double latitude, double longtitude, string description)
         {
             Point newPoint = new Point(latitude, longtitude);
-            Place newPlace = new Place();
-            newPlace.Name = name;
-            newPlace.Type = type;
-            newPlace.City = city;
-            newPlace.Address = address;
-            newPlace.WorkTimeStart = workTimeStart;
-            newPlace.WorkTimeFinish = workTimeFinish;
-            newPlace.Coordinates = newPoint;
-            newPlace.Description = description;
+            Place newPlace = new Place
+            {
+                Name = name,
+                Type = type,
+                City = city,
+                Address = address,
+                WorkTimeStart = workTimeStart,
+                WorkTimeFinish = workTimeFinish,
+                Coordinates = newPoint,
+                Description = description
+            };
             _context.Places.Add(newPlace);
             _context.SaveChanges();
 
-            return "Thank you for helping us!";
-        }
-
-        public IActionResult ShowPlaces()
-        {
-            List<Place> PlacesToShow = _context.Places
-    .Select(c => new Place { Id = c.Id, Name = c.Name, Address = c.Address, City = c.City,  })
-    .ToList();
-            return View(PlacesToShow);
+            return View();
         }
 
         private readonly ApplicationDbContext _context;
-        public AddPlaceController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
     }
 }

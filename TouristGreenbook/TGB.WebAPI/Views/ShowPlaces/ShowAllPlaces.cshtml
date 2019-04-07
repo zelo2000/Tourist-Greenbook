@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "All places";
+}
+
+@model List<Place>
+
+<ul>
+    @foreach (var place in Model)
+    {
+        <li>@place.Name</li>
+    }
+</ul>
