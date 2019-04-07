@@ -3,6 +3,8 @@
 }
 
 <form action="/AddNewTrip/FinallStage" method="post">
+    <label for="city">Місто в яке ви подорожуєте*</label>
+    <br />
     <select name="city">
         @{
             foreach (var city in ViewBag.Cities)
@@ -12,15 +14,23 @@
         }
     </select>
     <br />
+    <label for="startDate">Дата та час приїзду в місто*</label>
+    <br />
     <input type="date" name="startDate" />
     <input type="time" name="startTime" />
+    <br />
+    <label for="finishDate">Дата та час відїзду з міста*</label>
     <br />
     <input type="date" name="finishDate" />
     <input type="time" name="finishTime" />
     <br />
+    <label for="budget">Орієнтовний бюджет на 1 день*</label>
+    <br />
     <input type="number" name="budget" />
     <br />
-    <select name="tags" multiple="multiple">
+    <label for="tags">Типи закладів які ви хочете відвідата*</label>
+    <br />
+    <select name="chosenTags" multiple="multiple">
         @{
             foreach (var tag in ViewBag.Tags)
             {
@@ -29,5 +39,5 @@
         }
     </select>
     <br />
-    <input type="submit" name="submit" />
+    <input type="submit" value="Submit" name="submit" />
 </form>

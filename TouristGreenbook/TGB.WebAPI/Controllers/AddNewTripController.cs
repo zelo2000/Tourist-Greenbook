@@ -25,15 +25,12 @@ namespace TGB.WebAPI.Controllers
                 .Select(x => x.City)
                 .Distinct()
                 .ToList();
-
             ViewBag.Cities = cities;
 
-            List<string> tags = new List<string>()
-            {
-                "Accomodation",
-                "Entertaiment",
-                "Food"
-            };
+            var tags = _context.Places
+                .Select(x => x.Type)
+                .Distinct()
+                .ToList();
             ViewBag.Tags = tags;
 
             return View();
@@ -55,11 +52,24 @@ namespace TGB.WebAPI.Controllers
                 Budget = budget
             };
 
-            ViewBag.City = city;
-            ViewBag.Start = startDate.ToString();
-            ViewBag.Finish = finishDate.ToString();
-            ViewBag.Budget = budget;
-            ViewBag.ChosenTags = chosenTags;
+            //ViewBag.City = city;
+            //ViewBag.Start = startDate.ToString();
+            //ViewBag.Finish = finishDate.ToString();
+            //ViewBag.Budget = budget;
+            //ViewBag.ChosenTags = chosenTags;
+
+            //var tags = _context.Places
+            //    .Select(x => x.Type)
+            //    .Distinct()
+            //    .ToList();
+
+            var tagedPlace = new Dictionary<string, List<Place>>();
+            foreach (var tag in chosenTags)
+            {
+                tagedPlace.Add(tag, _context.Places.Where(x => x.City == city && x.Type == tag).ToList());
+            }
+
+            ViewBag.TagedPlace = tagedPlace;
 
             return View();
         }
