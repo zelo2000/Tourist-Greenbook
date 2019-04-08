@@ -18,5 +18,7 @@ namespace TGB.WebAPI.Data
             : base(options)
         {
         }
+
+        public DbSet<TGB.WebAPI.Models.YourTrips> YourTrips { get; set; }
     }
 }

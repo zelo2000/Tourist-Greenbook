@@ -1,0 +1,54 @@
+﻿@model TGB.WebAPI.Models.YourTrips
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>YourTrips</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StayTimeStart" class="control-label"></label>
+                <input asp-for="StayTimeStart" class="form-control" />
+                <span asp-validation-for="StayTimeStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StayTimeFinish" class="control-label"></label>
+                <input asp-for="StayTimeFinish" class="form-control" />
+                <span asp-validation-for="StayTimeFinish" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Budget" class="control-label"></label>
+                <input asp-for="Budget" class="form-control" />
+                <span asp-validation-for="Budget" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Places" class="control-label"></label>
+                <input asp-for="Places" class="form-control" />
+                <span asp-validation-for="Places" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
