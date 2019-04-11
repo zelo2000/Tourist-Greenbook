@@ -69,6 +69,7 @@ namespace TGB.WebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            CreateRoles(serviceProvider).Wait();
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
@@ -87,13 +88,26 @@ namespace TGB.WebAPI
                 }
             }
 
+            IdentityUser admin = await _userManager.FindByEmailAsync("Admin1@gmail.com");
+
+            if (admin == null)
+            {
+                admin = new IdentityUser()
+                {
+                    UserName = "Admin1@gmail.com",
+                    Email = "Admin1@gmail.com",
+                };
+                await _userManager.CreateAsync(admin, "Admin1@123");
+            }
+            await _userManager.AddToRoleAsync(admin, "Admin");
+
             IdentityUser user1 = await _userManager.FindByEmailAsync("testuser1@gmail.com");
 
             if (user1 == null)
             {
                 user1 = new IdentityUser()
                 {
-                    UserName = "testuser1",
+                    UserName = "testuser1@gmail.com",
                     Email = "testuser1@gmail.com",
                 };
                 await _userManager.CreateAsync(user1, "Testuser1@123");
@@ -106,7 +120,7 @@ namespace TGB.WebAPI
             {
                 user2 = new IdentityUser()
                 {
-                    UserName = "testuser2",
+                    UserName = "testuser2@gmail.com ",
                     Email = "testuser2@gmail.com",
                 };
                 await _userManager.CreateAsync(user2, "Testuser2@123");
