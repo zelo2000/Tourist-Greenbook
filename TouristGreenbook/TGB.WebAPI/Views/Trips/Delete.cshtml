@@ -35,6 +35,12 @@
         <dd>
             @Html.DisplayFor(model => model.Budget)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Places)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Places.Count)
+        </dd>
     </dl>
     
     <form asp-action="Delete">
