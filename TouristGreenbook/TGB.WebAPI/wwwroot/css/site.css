@@ -28,6 +28,10 @@ body {
     margin: 15px;
 }
 
+#final_stage {
+    align-items: center;
+    justify-content: center;
+}
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */

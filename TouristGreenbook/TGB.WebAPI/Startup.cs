@@ -37,8 +37,11 @@ namespace TGB.WebAPI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddRoleManager<RoleManager<IdentityRole>>()
+                    .AddDefaultUI()
+                    .AddDefaultTokenProviders()
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -89,16 +92,16 @@ namespace TGB.WebAPI
                 }
             }
 
-            IdentityUser admin = await _userManager.FindByEmailAsync("Admin2@gmail.com");
+            IdentityUser admin = await _userManager.FindByEmailAsync("Admin1@gmail.com");
 
             if (admin == null)
             {
                 admin = new IdentityUser()
                 {
-                    UserName = "Admin2",
-                    Email = "Admin2@gmail.com",
+                    UserName = "Admin1@gmail.com",
+                    Email = "Admin1@gmail.com",
                 };
-                await _userManager.CreateAsync(admin, "Admin2@123");
+                await _userManager.CreateAsync(admin, "Admin1@123");
             }
             await _userManager.AddToRoleAsync(admin, "Admin");
 
@@ -108,7 +111,7 @@ namespace TGB.WebAPI
             {
                 user1 = new IdentityUser()
                 {
-                    UserName = "testuser1",
+                    UserName = "testuser1@gmail.com",
                     Email = "testuser1@gmail.com",
                 };
                 await _userManager.CreateAsync(user1, "Testuser1@123");
@@ -121,7 +124,7 @@ namespace TGB.WebAPI
             {
                 user2 = new IdentityUser()
                 {
-                    UserName = "testuser2",
+                    UserName = "testuser2@gmail.com ",
                     Email = "testuser2@gmail.com",
                 };
                 await _userManager.CreateAsync(user2, "Testuser2@123");

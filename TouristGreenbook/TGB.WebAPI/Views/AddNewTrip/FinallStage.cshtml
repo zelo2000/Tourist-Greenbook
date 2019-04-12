@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Finall stage";
+}
+
+<div id="final_stage">
+    <div id="tags">
+        <ul>
+            @{
+                foreach (var element in ViewBag.TagedPlace)
+                {
+                    <li>
+                        <h3>@element.Key</h3>
+                        @{
+                            foreach (var place in element.Value)
+                            {
+                                <input type="checkbox" name="@place.GetHashCode()" />
+                                <label for="@place.GetHashCode()">@place.Name</label>
+                                <br />
+                            }
+                        }
+                    </li>
+                }
+            }
+        </ul>
+        <button class="btn btn-light" type="submit" onclick="">Create</button>
+    </div>
+    <div id="path">
+
+    </div>
+    <div id="info">
+        <h3>Information</h3>
+        <p id="description"></p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function CreatePath() {
+
+    }
+</script>
