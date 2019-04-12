@@ -1,33 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TGB.WebAPI.Data;
 using TGB.WebAPI.Models;
 
-namespace TGB.WebAPI.Views
+namespace TGB.WebAPI.Controllers
 {
-    //[Authorize(Roles="User")]
-    public class YourTripsController : Controller
+    public class TripsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public YourTripsController(ApplicationDbContext context)
+        public TripsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: YourTrips
+        // GET: Trips
         public async Task<IActionResult> Index()
         {
-            return View(await _context.YourTrips.ToListAsync());
+            return View(await _context.Trips.ToListAsync());
         }
 
-        // GET: YourTrips/Details/5
+        // GET: Trips/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,39 +30,39 @@ namespace TGB.WebAPI.Views
                 return NotFound();
             }
 
-            var yourTrips = await _context.YourTrips
+            var trips = await _context.Trips
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (yourTrips == null)
+            if (trips == null)
             {
                 return NotFound();
             }
 
-            return View(yourTrips);
+            return View(trips);
         }
 
-        // GET: YourTrips/Create
+        // GET: Trips/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: YourTrips/Create
+        // POST: Trips/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] YourTrips yourTrips)
+        public async Task<IActionResult> Create([Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(yourTrips);
+                _context.Add(trip);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(yourTrips);
+            return View(trip);
         }
 
-        // GET: YourTrips/Edit/5
+        // GET: Trips/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +70,22 @@ namespace TGB.WebAPI.Views
                 return NotFound();
             }
 
-            var yourTrips = await _context.YourTrips.FindAsync(id);
-            if (yourTrips == null)
+            var trips = await _context.Trips.FindAsync(id);
+            if (trips == null)
             {
                 return NotFound();
             }
-            return View(yourTrips);
+            return View(trips);
         }
 
-        // POST: YourTrips/Edit/5
+        // POST: Trips/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] YourTrips yourTrips)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
         {
-            if (id != yourTrips.Id)
+            if (id != trip.Id)
             {
                 return NotFound();
             }
@@ -99,12 +94,12 @@ namespace TGB.WebAPI.Views
             {
                 try
                 {
-                    _context.Update(yourTrips);
+                    _context.Update(trip);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!YourTripsExists(yourTrips.Id))
+                    if (!TripsExists(trip.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +110,10 @@ namespace TGB.WebAPI.Views
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(yourTrips);
+            return View(trip);
         }
 
-        // GET: YourTrips/Delete/5
+        // GET: Trips/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,30 +121,30 @@ namespace TGB.WebAPI.Views
                 return NotFound();
             }
 
-            var yourTrips = await _context.YourTrips
+            var trips = await _context.Trips
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (yourTrips == null)
+            if (trips == null)
             {
                 return NotFound();
             }
 
-            return View(yourTrips);
+            return View(trips);
         }
 
-        // POST: YourTrips/Delete/5
+        // POST: Trips/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var yourTrips = await _context.YourTrips.FindAsync(id);
-            _context.YourTrips.Remove(yourTrips);
+            var trips = await _context.Trips.FindAsync(id);
+            _context.Trips.Remove(trips);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool YourTripsExists(int id)
+        private bool TripsExists(int id)
         {
-            return _context.YourTrips.Any(e => e.Id == id);
+            return _context.Trips.Any(e => e.Id == id);
         }
     }
 }

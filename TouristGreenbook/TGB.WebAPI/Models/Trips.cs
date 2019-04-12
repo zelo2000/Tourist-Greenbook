@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TGB.WebAPI.Models
 {
-    public class YourTrips
+    public class Trips
     {
         /// <summary>
         /// Trip id

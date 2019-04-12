@@ -19,6 +19,8 @@ namespace TGB.WebAPI.Data
         {
         }
 
-        public DbSet<TGB.WebAPI.Models.YourTrips> YourTrips { get; set; }
+        //public DbSet<TGB.WebAPI.Models.Trips> Trips_1 { get; set; }
+
+        //public DbSet<TGB.WebAPI.Models.YourTrips> YourTrips { get; set; }
     }
 }

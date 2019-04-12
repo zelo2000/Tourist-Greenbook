@@ -1,4 +1,4 @@
-﻿@model TGB.WebAPI.Models.YourTrips
+﻿@model TGB.WebAPI.Models.Trip
 
 @{
     ViewData["Title"] = "Create";
@@ -6,7 +6,7 @@
 
 <h2>Create</h2>
 
-<h4>YourTrips</h4>
+<h4>Trips</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -31,12 +31,6 @@
                 <label asp-for="Budget" class="control-label"></label>
                 <input asp-for="Budget" class="form-control" />
                 <span asp-validation-for="Budget" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Places" class="control-label"></label>
-                
-                <input asp-for="Places" class="list-group-item" />
-                <span asp-validation-for="Places" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
