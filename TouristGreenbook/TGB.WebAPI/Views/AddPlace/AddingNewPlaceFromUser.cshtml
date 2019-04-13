@@ -34,7 +34,7 @@
             <tr>
             <tr>
                 <td><p>Coordinates</p></td>
-                <td><input type="text" name="Coordinates" /></td>
+                <td><input type="text" id="coord" name="Coordinates" /></td>
             </tr>
             <tr>
                 <td><p>Latitude</p></td>
@@ -102,11 +102,27 @@
 
             google.maps.event.addListener(marker, 'dragend', function (event) {
 
+                document.getElementById("lat").value = event.latLng.lat();
+                document.getElementById("long").value = event.latLng.lng();
+                document.getElementById("coord").value = event.latLng;
+            });
+            google.maps.event.addListener(marker, 'dragend', function (event) {
 
                 document.getElementById("lat").value = event.latLng.lat();
                 document.getElementById("long").value = event.latLng.lng();
+                document.getElementById("coord").value = event.latLng;
             });
+            google.maps.event.addListener(map, 'click', function (event) {
+                document.getElementById("lat").value = event.latLng.lat();
+                document.getElementById("long").value = event.latLng.lng();
+                document.getElementById("coord").value = event.latLng;
+                marker.setPosition(event.latLng);
+                
+            });
+            
+
         }
+        
         google.maps.event.addDomListener(window, "load", initialize());
     </script>
 </div>
