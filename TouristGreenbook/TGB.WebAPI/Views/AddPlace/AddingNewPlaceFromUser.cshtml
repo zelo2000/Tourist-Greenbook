@@ -100,7 +100,7 @@
                 title: "Your location"
             });
 
-            google.maps.event.addListener(marker, 'dragend', function (event) {
+            google.maps.event.addListener(marker, 'drag', function (event) {
 
                 document.getElementById("lat").value = event.latLng.lat();
                 document.getElementById("long").value = event.latLng.lng();
