@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,7 @@ namespace TGB.WebAPI.Controllers
     public class TripsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private Trip _newTrip;
 
         public TripsController(ApplicationDbContext context)
         {
@@ -40,27 +43,87 @@ namespace TGB.WebAPI.Controllers
             return View(trips);
         }
 
-        // GET: Trips/Create
-        public IActionResult Create()
+        // GET: Trips/Create ///<controller>/
+        public IActionResult Create()//InitialStage()
         {
+            var cities = _context.Trips
+                .Select(x => x.City)
+                .Distinct()
+                .ToList();
+            ViewBag.Cities = cities;
+
+            var tags = _context.Places
+                .Select(x => x.Type)
+                .Distinct()
+                .ToList();
+            ViewBag.Tags = tags;
+
+            var places = _context.Places.ToList();
+
+            var ids = _context.Places
+                .Select(x => x.Id)
+                .ToList();
+            ViewBag.Ids = ids;
+
+            return View(places);
+        }
+
+        // POST: Trips/CreateFinal
+        [HttpPost]
+        public IActionResult CreateFinal(string city, DateTime startDate, TimeSpan startTime, DateTime finishDate, TimeSpan finishTime, double budget, string[] chosenTags)
+        {
+            startDate = startDate.AddHours(startTime.Hours);
+            startDate = startDate.AddMinutes(startTime.Minutes);
+            finishDate = finishDate.AddHours(finishTime.Hours);
+            finishDate = finishDate.AddMinutes(finishTime.Minutes);
+            _newTrip = new Trip()
+            {
+                City = city,
+                StayTimeStart = startDate,
+                StayTimeFinish = finishDate,
+                Budget = budget
+            };
+
+            //ViewBag.City = city;
+            //ViewBag.Start = startDate.ToString();
+            //ViewBag.Finish = finishDate.ToString();
+            //ViewBag.Budget = budget;
+            //ViewBag.ChosenTags = chosenTags;
+
+            //var tags = _context.Places
+            //    .Select(x => x.Type)
+            //    .Distinct()
+            //    .ToList();
+
+            var tagedPlace = new Dictionary<string, List<Place>>();
+            foreach (var tag in chosenTags)
+            {
+                tagedPlace.Add(tag, (_context.Places.Where(x => x.City == city && x.Type == tag)).ToList());
+            }
+
+            ViewBag.TagedPlace = tagedPlace;
+
             return View();
         }
 
-        // POST: Trips/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(trip);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(trip);
-        }
+
+        // Here we have some problems in commented code. Please look at this.
+
+        //// POST: Trips/Create
+        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(trip);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(trip);
+        //}
 
         // GET: Trips/Edit/5
         public async Task<IActionResult> Edit(int? id)
