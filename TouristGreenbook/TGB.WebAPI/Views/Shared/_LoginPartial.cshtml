@@ -13,6 +13,11 @@
                 {
                     <li><a asp-area="" asp-controller="Trips" asp-action="Index">Your Trips</a></li>
                 }
+                if (User.IsInRole("Admin"))
+                {
+                    <li><a asp-area="" asp-controller="Role" asp-action="Index">Manage Roles</a></li>
+                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Manage Users</a></li>
+                }
             }
             <li><a asp-area="" asp-controller="AddPlace" asp-action="AddingNewPlaceFromUser">Add Place</a></li>
             <li>
