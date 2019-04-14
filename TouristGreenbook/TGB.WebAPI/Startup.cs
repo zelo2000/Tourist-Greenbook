@@ -72,6 +72,7 @@ namespace TGB.WebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
             CreateRoles(serviceProvider).Wait();
         }
 
