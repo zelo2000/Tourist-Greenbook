@@ -1,48 +1,154 @@
-﻿@model TGB.WebAPI.Models.Trip
+﻿@model IEnumerable<TGB.WebAPI.Models.Place>
 
-@{
-    ViewData["Title"] = "Create";
-}
 
-<h2>Create</h2>
+<form action="CreateFinal" method="post">
+    <label for="city">Місто, в яке ви подорожуєте*</label>
+    <br />
+    <select name="city" required>
+        @{
+            foreach (var city in @ViewBag.Cities)
+            {
+                <option>@city</option>
+            }
+        }
+    </select>
+    <br />
+    <label for="startDate">Дата та час приїзду в місто*</label>
+    <br />
+    <input type="date" name="startDate" required />
+    <input type="time" name="startTime" />
+    <br />
+    <label for="finishDate">Дата та час від'їзду з міста*</label>
+    <br />
+    <input type="date" name="finishDate" required />
+    <input type="time" name="finishTime" />
+    <br />
+    <label for="budget">Орієнтовний бюджет на 1 день*</label>
+    <br />
+    <input type="number" name="budget" required />
+    <br />
+    <label for="tags">Типи закладів, які ви хочете відвідати*</label>
+    <br />
+    <select name="chosenTags" multiple="multiple" required>
+        @{
+            foreach (var tag in ViewBag.Tags)
+            {
+                <option>@tag</option>
+            }
+        }
+    </select>
+    <br />
+    <label for="places">Заклади, які ви хочете відвідати*</label>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                @Html.DisplayNameFor(model => model.Name)
+            </tr>
+            <tr>
+                @Html.DisplayNameFor(model => model.Type)
+            </tr>
+            <tr>
+                @Html.DisplayNameFor(model => model.Address)
+            </tr>
+            <tr>
+                @Html.DisplayNameFor(model => model.WorkTimeStart)
+            </tr>
+            <tr>
+                @Html.DisplayNameFor(model => model.WorkTimeFinish)
+            </tr>
+            <tr>
+                @Html.DisplayNameFor(model => model.Rating)
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var place in Model)
+             {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => place.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => place.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=>place.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=>place.WorkTimeStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=>place.WorkTimeFinish)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=>place.Rating)
+                </td>
+            </tr>
+             }
+        </tbody>
+        
+    </table>
 
-<h4>Trips</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StayTimeStart" class="control-label"></label>
-                <input asp-for="StayTimeStart" class="form-control" />
-                <span asp-validation-for="StayTimeStart" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StayTimeFinish" class="control-label"></label>
-                <input asp-for="StayTimeFinish" class="form-control" />
-                <span asp-validation-for="StayTimeFinish" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Budget" class="control-label"></label>
-                <input asp-for="Budget" class="form-control" />
-                <span asp-validation-for="Budget" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Places" class="control-label"></label>
-                <input asp-for="Places" class="form-control" />
-                <span asp-validation-for="Places" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
-</div>
+    @*<select name="chosenPlaces" multiple="multiple" required>
+        @{
+            foreach (var id in ViewBag.Ids)
+            {
+                <option>
+                    < @id
+
+                </option>
+            }
+        }
+    </select>*@
+    <br />
+    <input class="btn btn-light" type="submit" value="Submit" name="submit" />
+</form>
+
+@*@model TGB.WebAPI.Models.Trip
+
+    @{
+        ViewData["Title"] = "Create";
+    }
+
+    <h2>Create</h2>
+
+    <h4>Trips</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="City" class="control-label"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StayTimeStart" class="control-label"></label>
+                    <input asp-for="StayTimeStart" class="form-control" />
+                    <span asp-validation-for="StayTimeStart" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StayTimeFinish" class="control-label"></label>
+                    <input asp-for="StayTimeFinish" class="form-control" />
+                    <span asp-validation-for="StayTimeFinish" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Budget" class="control-label"></label>
+                    <input asp-for="Budget" class="form-control" />
+                    <span asp-validation-for="Budget" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Places" class="control-label"></label>
+                    <input asp-for="Places" class="form-control" />
+                    <span asp-validation-for="Places" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>*@
 
 <div>
     <a asp-action="Index">Back to List</a>

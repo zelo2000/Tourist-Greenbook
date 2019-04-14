@@ -13,6 +13,13 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Views\Trips\Create\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Trips\CreateFinal.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>
