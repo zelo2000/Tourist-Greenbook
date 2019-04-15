@@ -33,38 +33,48 @@
         @{
             foreach (var tag in ViewBag.Tags)
             {
+                //<input type="checkbox" name="@tag.GetHashCode()" />
+                //<label for="@tag.GetHashCode()">@tag</label>
                 <option>@tag</option>
             }
         }
     </select>
     <br />
-    <label for="places">Заклади, які ви хочете відвідати*</label>
+    @*<label for="places">Заклади, які ви хочете відвідати*</label>
     <br />
     <table class="table">
         <thead>
             <tr>
-                @Html.DisplayNameFor(model => model.Name)
-            </tr>
-            <tr>
-                @Html.DisplayNameFor(model => model.Type)
-            </tr>
-            <tr>
-                @Html.DisplayNameFor(model => model.Address)
-            </tr>
-            <tr>
-                @Html.DisplayNameFor(model => model.WorkTimeStart)
-            </tr>
-            <tr>
-                @Html.DisplayNameFor(model => model.WorkTimeFinish)
-            </tr>
-            <tr>
-                @Html.DisplayNameFor(model => model.Rating)
+                <th>
+                    <input type="checkbox" name="selectAll"/>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Type)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkTimeStart)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Rating)
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var place in Model)
              {
             <tr>
+                <td>
+                    <input type="checkbox" name="@place.Id" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => place.Name)
                 </td>
@@ -87,68 +97,10 @@
              }
         </tbody>
         
-    </table>
-
-    @*<select name="chosenPlaces" multiple="multiple" required>
-        @{
-            foreach (var id in ViewBag.Ids)
-            {
-                <option>
-                    < @id
-
-                </option>
-            }
-        }
-    </select>*@
+    </table>*@
     <br />
     <input class="btn btn-light" type="submit" value="Submit" name="submit" />
 </form>
-
-@*@model TGB.WebAPI.Models.Trip
-
-    @{
-        ViewData["Title"] = "Create";
-    }
-
-    <h2>Create</h2>
-
-    <h4>Trips</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="City" class="control-label"></label>
-                    <input asp-for="City" class="form-control" />
-                    <span asp-validation-for="City" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="StayTimeStart" class="control-label"></label>
-                    <input asp-for="StayTimeStart" class="form-control" />
-                    <span asp-validation-for="StayTimeStart" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="StayTimeFinish" class="control-label"></label>
-                    <input asp-for="StayTimeFinish" class="form-control" />
-                    <span asp-validation-for="StayTimeFinish" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Budget" class="control-label"></label>
-                    <input asp-for="Budget" class="form-control" />
-                    <span asp-validation-for="Budget" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Places" class="control-label"></label>
-                    <input asp-for="Places" class="form-control" />
-                    <span asp-validation-for="Places" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
-            </form>
-        </div>
-    </div>*@
 
 <div>
     <a asp-action="Index">Back to List</a>
