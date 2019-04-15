@@ -96,14 +96,16 @@ namespace TGB.WebAPI.Controllers
             //    .ToList();
 
             var tagedPlace = new Dictionary<string, List<Place>>();
+            var tagedPlaces = new List<Place>();
             foreach (var tag in chosenTags)
             {
                 tagedPlace.Add(tag, (_context.Places.Where(x => x.City == city && x.Type == tag)).ToList());
+                tagedPlaces.AddRange(_context.Places.Where(x => x.City == city && x.Type == tag));
             }
 
             ViewBag.TagedPlace = tagedPlace;
 
-            return View();
+            return View(tagedPlaces);
         }
 
 
