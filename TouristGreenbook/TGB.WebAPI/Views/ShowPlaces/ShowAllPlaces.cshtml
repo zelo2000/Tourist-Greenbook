@@ -10,3 +10,94 @@
         <li>@place.Name</li>
     }
 </ul>
+<style>
+    #map, #map_canvas {
+        width: 500px;
+        height: 500px;
+    }
+</style>
+
+<div id="map_canvas" style="width: 1000px; height: 1000px;"></div>
+
+<div id="map"></div>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
+</script>
+
+﻿
+<script src="http://maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
+
+
+<style>
+    #map_canvas img {
+        max-width: none;
+    }
+</style>
+
+
+<style>
+    .infoDiv {
+        height: 200px;
+        width: 300px;
+        -webkit-user-select: none;
+        background-color: white;
+    }
+</style>
+<br />
+
+<div id="map_canvas" style="height: 550px;"></div>
+
+@section scripts {
+    <section class="scripts">
+
+        <script type="text/javascript">
+
+
+                $(document).ready(function () {
+                    Initialize();
+                });
+
+            function Initialize() {
+
+                google.maps.visualRefresh = true;
+                var Lviv = new google.maps.LatLng(49.8382600, 24.0232400);
+
+                var mapOptions = {
+                    zoom: 13,
+                    center: Lviv,
+                    mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP
+                };
+
+                var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+
+                var data = [
+                    { "Id": 1, "Name": "Kryyivka", "Lat": "49.841303735401844", "Long": "24.032249450683594" },
+                    { "Id": 2, "Name": "Opernyi teatr ", "Lat": "49.84404362156558", "Long": "24.026198387145996" },
+                    { "Id": 3, "Name": "Vysokyi zamok", "Lat": "49.848222340822105", "Long": "24.03933048248291" },
+                    { "Id": 4, "Name": "Universytet Franka", "Lat": "49.8406118203997", "Long": "24.022507667541504" }
+                ];
+
+                $.each(data, function (i, item) {
+                    var marker = new google.maps.Marker({
+                        'position': new google.maps.LatLng(item.Lat, item.Long),
+                        'map': map,
+                        'title': item.Name
+                    });
+
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: "<div class='infoDiv'><h2>" + item.Name + "</div></div>"
+                    });
+
+                    google.maps.event.addListener(marker, 'click', function () {
+                        infowindow.open(map, marker);
+                    });
+
+                })
+            }
+
+
+        </script>
+    </section>
+} 
