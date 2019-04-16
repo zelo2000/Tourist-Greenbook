@@ -1,20 +1,21 @@
-﻿@model IEnumerable<TGB.WebAPI.Models.Place> 
+﻿@using Microsoft.AspNetCore.Http.Features.Authentication
+@model IEnumerable<TGB.WebAPI.Models.Place> 
     @*Dictionary<string, List<Place>>()*@
 
 @{
     ViewData["Title"] = "Choose needed places";
 }
 
-<div id="create_final">
+<div id="select_places">
     <div id="tags">
         @{
             foreach (var element in ViewBag.TagedPlace)
             {
-                <table class="table">
-                    <thead>
+                <table class="table table-striped table-hover table-condensed">
+                    <thead class="">
                     <tr>
                         <th>
-                            <input type="checkbox" name="selectAll" />
+                            
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Name)
@@ -48,7 +49,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <input type="checkbox" name="@place.GetHashCode()" />
+                                                <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)" />
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => place.Name)
@@ -163,7 +164,36 @@
 </div>
 
 <script type="text/javascript">
-    function CreatePath() {
+    function changePlaceState(paramName) {
+        //console.log(paramName.checked);
+        if ((paramName.checked == true)) {
 
+            // ToDo show on GoogleMaps
+            var chB = paramName;
+            $("div").text(paramName.name + " checked!");
+        } else {
+            
+            // ToDo get out from google maps 
+            var chB = paramName;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function getCheckedPlaces() {
+        var checkedB = document.querySelectorAll("input[type=checkbox]:checked");
+        //var places = @Model;
+        //var places = new type();
+        for (var i = 0; i < checkedB.length; i++) {
+            var chB = checkedB[i];
+            
+        }
+
+        //$("div").text(checkedB.length);
+    }
+</script>
+<script type="text/javascript">
+    function CreatePath() {
+        
     }
 </script>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace TGB.WebAPI.Models
 {
     /// <summary>
-    /// Provide emumeration of place stata
+    /// Provide enumeration of place state
     /// </summary>
     public enum PlaceState
     {
