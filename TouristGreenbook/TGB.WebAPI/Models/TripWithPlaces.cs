@@ -8,14 +8,14 @@ namespace TGB.WebAPI.Models
     /// </summary>
     public class TripWithPlaces 
     {
-        ///// <summary>
-        ///// List of places the user visited in this trip
-        ///// </summary>
-        //public List<Trip> Trips { get; set; }
-        ///// <summary>
-        ///// List of places the user visited in this trip
-        ///// </summary>
-        //public List<List<Place>> Places { get; set; }
+        /// <summary>
+        /// List of places the user visited in this trip
+        /// </summary>
+        public List<Trip> Trips { get; set; }
+        /// <summary>
+        /// List of places the user visited in this trip
+        /// </summary>
+        public List<Place> Places { get; set; }
         /// <summary>
         /// List of places the user visited in the trip
         /// </summary>
