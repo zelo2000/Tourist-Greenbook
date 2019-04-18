@@ -33,7 +33,7 @@ namespace TGB.WebAPI.Models
         /// </summary>
         public double Budget { get; set; }
         /// <summary>
-        /// A concrete user to which is related current trip
+        /// User who make trip
         /// </summary>
         public ConcreteUser ConcreteUser { get; set; }
     }
