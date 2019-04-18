@@ -6,7 +6,7 @@
     ViewData["Title"] = "Choose needed places";
 }
 
-<form action="CreateTrip" method="post">
+<form action="/Trips/CreateTrip" method="post">
     <div id="select_places">
         <div id="tags">
             @{
@@ -83,80 +83,81 @@
             }
 
             @*<table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox" name="selectAll" />
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Name)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Type)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Address)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.WorkTimeStart)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.WorkTimeFinish)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Rating)
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        foreach (var element in ViewBag.TagedPlace)
-                        {
-                            <tr>
-                                <h3>@element.Key</h3>
-                            </tr>
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" name="selectAll" />
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Type)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Address)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WorkTimeStart)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Rating)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (var element in ViewBag.TagedPlace)
                             {
-                                foreach (var place in Model) //(var place in element.Value)
+                                <tr>
+                                    <h3>@element.Key</h3>
+                                </tr>
                                 {
-                                    if (place.Type==element.Key)
+                                    foreach (var place in Model) //(var place in element.Value)
                                     {
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" name="@place.GetHashCode()" />
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => place.Name)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => place.Type)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => place.Address)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => place.WorkTimeStart)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => place.WorkTimeFinish)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => place.Rating)
-                                            </td>
-                                        </tr>
+                                        if (place.Type==element.Key)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="@place.GetHashCode()" />
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => place.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => place.Type)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => place.Address)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => place.Rating)
+                                                </td>
+                                            </tr>
+                                        }
+
+
                                     }
-
-
                                 }
-                            }
 
+                            }
                         }
-                    }
-                </tbody>
-            </table>*@
+                    </tbody>
+                </table>*@
             @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces" />*@
 
         </div>
-        <button class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces()">CreateTrip</button>
+        @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces()" />*@
+        <button class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces();">Create Trip</button> @*CreateTrip*@
         <div id="path">
 
         </div>
@@ -165,15 +166,17 @@
             <p id="description"></p>
         </div>
     </div>
+    @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces()" />*@
 </form>
 
 <script type="text/javascript">
     function changePlaceState(paramName) {
         //console.log(paramName.checked);
         if ((paramName.checked == true)) {
-
+            
             // ToDo show on GoogleMaps
             var chB = paramName;
+            
             //$("div").text(paramName.name + " checked!");
         } else {
 
@@ -185,27 +188,52 @@
 
 <script type="text/javascript">
     function getCheckedPlaces() {
-        var checkedB = document.querySelectorAll("input[type=checkbox]:checked"); // дай мені хвилинку
-        console.log(checkedB.checked);
-       
-        @*var places = @Model;*@
-        //var places = new type();
-        var chB = '';
+        var checkedB = document.querySelectorAll("input[type=checkbox]:checked");
+        //console.log(checkedB.checked);
+       var chB = '';
 
        for (var i = 0; i < checkedB.length; i++) {
-           chB += checkedB[i].name
+           chB += checkedB[i].name;
            if (i < checkedB.length - 1) {
                chB += '*';
            }
          }
-        var r = { ids : chB };
+        
+        var tripS = '';
+        tripS += sessionStorage.getItem('City').toString();
+        tripS += '|' + sessionStorage.getItem('StartDate').toString();
+        tripS += '|' + sessionStorage.getItem('StartTime').toString();
+        tripS += '|' + sessionStorage.getItem('FinishDate').toString();
+        tripS += '|' + sessionStorage.getItem('FinishTime').toString();;
+        tripS += '|' + sessionStorage.getItem('Budget').toString();
+        var t = { trip: tripS };
+        var r = { ids: chB, trip: tripS };
         Create(r);
+        
         //$("div").text(checkedB.length);
     }
     function Create(filters) {
         
         $.ajax({
             url: '/Trips/CreateTrip',
+                type: 'POST',
+                cache: false,
+                async: false,
+                dataType: "html",
+                data: filters
+            })
+            .done(function (result) {
+                alert('success');
+                $('body').html(result);
+
+            }).fail(function (xhr) {
+                console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
+            });
+    }
+
+    function getTrip(filters) {
+        $.ajax({
+                url: '/Trips/CreateTrip',
                 type: 'POST',
                 cache: false,
                 async: true,
@@ -219,12 +247,7 @@
             }).fail(function (xhr) {
                 console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
             });
-
     }
-  
-    
-
-  
 </script>
 <script type="text/javascript">
     function CreatePath() {

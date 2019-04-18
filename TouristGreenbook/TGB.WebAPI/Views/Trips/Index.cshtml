@@ -1,4 +1,6 @@
-﻿@model IEnumerable<TGB.WebAPI.Models.Trip>
+﻿@model TripWithPlaces
+@*IEnumerable<TGB.WebAPI.Models.Trip>*@
+@*TripWithPlaces*@
 
 @{
     ViewData["Title"] = "Index";
@@ -13,47 +15,48 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.City)
+                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.City) @*model.City*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StayTimeStart)
+                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.StayTimeStart) @*.PlacesInTrip.ElementAt(0).Key.*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StayTimeFinish)
+                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.StayTimeFinish)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Budget)
+                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.Budget)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Places)
+                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.Places)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StayTimeStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StayTimeFinish)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Budget)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Places.Count)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.PlacesInTrip)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Key.City) @*item.City*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Key.StayTimeStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Key.StayTimeFinish)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Key.Budget)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Key.Places.Count)  @*item.Places.Count*@
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Key.Id">Edit</a> |  @*@item.Id*@
+                    <a asp-action="Details" asp-route-id="@item.Key.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Key.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

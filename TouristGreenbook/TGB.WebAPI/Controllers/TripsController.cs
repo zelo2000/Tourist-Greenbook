@@ -23,7 +23,18 @@ namespace TGB.WebAPI.Controllers
         // GET: Trips
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Trips.ToListAsync());
+            var tpl = new SortedDictionary<Trip, List<Place>>();
+            var tempTrips = await _context.Trips.ToListAsync();
+            foreach (var tempTrip in tempTrips)
+            {
+                tpl.Add(tempTrip, await _context.Places.Where(pl => pl.Trip==tempTrip).ToListAsync()); //.Where(pl=>pl.Id==pl.Id)
+            }
+
+            TripWithPlaces trips = new TripWithPlaces()
+            {
+                PlacesInTrip = tpl,
+            };
+            return View(trips); //await _context.Trips.ToListAsync() trips
         }
 
         // GET: Trips/Details/5
@@ -77,13 +88,13 @@ namespace TGB.WebAPI.Controllers
             startDate = startDate.AddMinutes(startTime.Minutes);
             finishDate = finishDate.AddHours(finishTime.Hours);
             finishDate = finishDate.AddMinutes(finishTime.Minutes);
-            _newTrip = new Trip()
-            {
-                City = city,
-                StayTimeStart = startDate,
-                StayTimeFinish = finishDate,
-                Budget = budget
-            };
+            //_newTrip = new Trip()
+            //{
+            //    City = city,
+            //    StayTimeStart = startDate,
+            //    StayTimeFinish = finishDate,
+            //    Budget = budget
+            //};
 
             //ViewBag.City = city;
             //ViewBag.Start = startDate.ToString();
@@ -105,8 +116,9 @@ namespace TGB.WebAPI.Controllers
                                                                                && x.State == PlaceState.Сonfirmed));
             }
 
+            //TempData["_newTrip"] = _newTrip;
             ViewBag.TagedPlace = tagedPlace;
-
+            
             return View(tagedPlaces);
             //return View(tagedPlaces);
         }
@@ -117,21 +129,44 @@ namespace TGB.WebAPI.Controllers
         //}
 
         [HttpPost]
-        public IActionResult CreateTrip(string ids)
+        public IActionResult CreateTrip(string ids, string trip)
         {
-            string [] arr =ids.Split('*');
-            int[] rez = new int[arr.GetLength(0)];
-            for (var i=0; i < arr.GetLength(0); i++)
+            string [] places =ids.Split('*');
+            int[] idsInt = new int[places.GetLength(0)];
+            for (var i=0; i < places.GetLength(0); i++)
             {
-                rez[i] = int.Parse(arr[i]);
-                // ПЕРЕВЕДИ В ІНТИ І ЗАКИНЬ ТО ВСЬО В МАСИВ REZ
+                idsInt[i] = int.Parse(places[i]);
             }
-            foreach (var id in rez)
+
+            string[] tripProps = trip.Split('|');
+            string tmpDate1 = tripProps[1] + " " + tripProps[2];
+            string tmpDate2 = tripProps[3] + " " + tripProps[4];
+            DateTime DT1 = Convert.ToDateTime(tmpDate1);
+            DateTime DT2 = Convert.ToDateTime(tmpDate2);
+            //for (var i = 0; i < tripProps.GetLength(0); i++)
+            //{
+            //    idsInt[i] = int.Parse(places[i]);
+            //}
+
+
+            _newTrip = new Trip()
             {
-                _newTrip.Places.Add(_context.Places.FirstOrDefault(pl=>pl.Id==id));
+                City = tripProps[0],
+                StayTimeStart =DT1,
+                StayTimeFinish = DT2,
+                Budget = Convert.ToDouble(tripProps[5]),
+                Places = new List<Place>()
+            };
+
+            //_newTrip = (Trip) TempData["_newTrip"];
+            foreach (var id in idsInt)
+            {
+                //_newTrip.Places.Add(_context.Places.FirstOrDefault(pl=>pl.Id==id));
+                _newTrip.Places.Add(_context.Places.SingleOrDefault(pl=>pl.Id==id));
             }
 
             _context.Trips.Add(_newTrip);
+            _context.SaveChanges();
             return View();
         }
 
