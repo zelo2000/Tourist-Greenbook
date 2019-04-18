@@ -1,27 +1,156 @@
-﻿@{
-    ViewData["Title"] = "Create Final";
+﻿@model IEnumerable<TGB.WebAPI.Models.Place> 
+    @*Dictionary<string, List<Place>>()*@
+
+@{
+    ViewData["Title"] = "Choose needed places";
 }
 
 <div id="create_final">
     <div id="tags">
-        <ul>
-            @{
-                foreach (var element in ViewBag.TagedPlace)
-                {
-                    <li>
-                        <h3>@element.Key</h3>
+        @{
+            foreach (var element in ViewBag.TagedPlace)
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" name="selectAll" />
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Type)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Address)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.WorkTimeStart)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Rating)
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
                         @{
-                            foreach (var place in element.Value)
+                            <tr>
+                                <h3>@element.Key</h3>
+                            </tr>
                             {
-                                <input type="checkbox" name="@place.GetHashCode()" />
-                                <label for="@place.GetHashCode()">@place.Name</label>
-                                <br />
+                                foreach (var place in Model) //(var place in element.Value)
+                                {
+                                    if (place.Type==element.Key)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="@place.GetHashCode()" />
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Type)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Address)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Rating)
+                                            </td>
+                                        </tr>
+                                    }
+                                            
+                                            
+                                }
                             }
                         }
-                    </li>
-                }
+                    </tbody>
+                </table>
             }
-        </ul>
+        }
+
+        @*<table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" name="selectAll" />
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkTimeStart)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Rating)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var element in ViewBag.TagedPlace)
+                    {
+                        <tr>
+                            <h3>@element.Key</h3>
+                        </tr>
+                        {
+                            foreach (var place in Model) //(var place in element.Value)
+                            {
+                                if (place.Type==element.Key)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="@place.GetHashCode()" />
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Type)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Address)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Rating)
+                                        </td>
+                                    </tr>
+                                }
+                                
+                                
+                            }
+                        }
+
+                    }
+                }
+            </tbody>
+        </table>*@
         <button class="btn btn-light" type="submit" onclick="">Create</button>
     </div>
     <div id="path">
