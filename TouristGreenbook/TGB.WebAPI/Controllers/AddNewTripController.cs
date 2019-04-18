@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+//using System.Web.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -73,6 +75,12 @@ namespace TGB.WebAPI.Controllers
 
             return View();
         }
+
+        //public JsonResult GetAllPlaces()
+        //{
+        //    //var data = список місць з тріпа
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
 
         private readonly ApplicationDbContext _context;
         private Trip _newTrip;
