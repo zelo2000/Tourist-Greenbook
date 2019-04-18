@@ -53,5 +53,9 @@ namespace TGB.WebAPI.Models
         /// Place rating
         /// </summary>
         public double Rating { get; set; }
+        /// <summary>
+        /// Place's trip
+        /// </summary>
+        public Trip Trip { get; set; }
     }
 }
