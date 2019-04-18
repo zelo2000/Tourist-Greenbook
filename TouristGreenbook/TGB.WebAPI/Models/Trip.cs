@@ -32,5 +32,9 @@ namespace TGB.WebAPI.Models
         /// Money spent by the user on the trip
         /// </summary>
         public double Budget { get; set; }
+        /// <summary>
+        /// User who make trip
+        /// </summary>
+        public ConcreteUser ConcreteUser { get; set; }
     }
 }
