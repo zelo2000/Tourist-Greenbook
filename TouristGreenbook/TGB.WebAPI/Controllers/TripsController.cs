@@ -24,15 +24,18 @@ namespace TGB.WebAPI.Controllers
         public async Task<IActionResult> Index()
         {
             var tpl = new SortedDictionary<Trip, List<Place>>();
+            
             var tempTrips = await _context.Trips.ToListAsync();
-            foreach (var tempTrip in tempTrips)
-            {
-                tpl.Add(tempTrip, await _context.Places.Where(pl => pl.Trip==tempTrip).ToListAsync()); //.Where(pl=>pl.Id==pl.Id)
-            }
+            //foreach (var tempTrip in tempTrips)
+            //{
+            //    tpl.Add(tempTrip, await _context.Places.Where(pl => pl.Trip.Id==tempTrip.Id).ToListAsync()); //.Where(pl=>pl.Id==pl.Id)
+            //}
 
             TripWithPlaces trips = new TripWithPlaces()
             {
-                PlacesInTrip = tpl,
+                Trips = await _context.Trips.ToListAsync(),
+                Places = await _context.Places.ToListAsync(),
+                //PlacesInTrip = tpl,
             };
             return View(trips); //await _context.Trips.ToListAsync() trips
         }

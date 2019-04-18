@@ -15,48 +15,48 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.City) @*model.City*@
+                @Html.DisplayNameFor(model => model.Trips.ElementAt(0).City) @*model.City*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.StayTimeStart) @*.PlacesInTrip.ElementAt(0).Key.*@
+                @Html.DisplayNameFor(model => model.Trips.ElementAt(0).StayTimeStart) @*.PlacesInTrip.ElementAt(0).Key.*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.StayTimeFinish)
+                @Html.DisplayNameFor(model => model.Trips.ElementAt(0).StayTimeFinish)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.Budget)
+                @Html.DisplayNameFor(model => model.Trips.ElementAt(0).Budget)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PlacesInTrip.ElementAt(0).Key.Places)
-            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Trips.ElementAt(0).Places)
+            </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.PlacesInTrip)
+        @foreach (var trip in Model.Trips)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Key.City) @*item.City*@
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Key.StayTimeStart)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Key.StayTimeFinish)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Key.Budget)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Key.Places.Count)  @*item.Places.Count*@
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Key.Id">Edit</a> |  @*@item.Id*@
-                    <a asp-action="Details" asp-route-id="@item.Key.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Key.Id">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => trip.City) @*item.City*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => trip.StayTimeStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => trip.StayTimeFinish)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => trip.Budget)
+            </td>
+            @*<td>
+        @Html.DisplayFor(modelItem => trip.Places.Where(pl=>pl.Trip.Id==trip.Id).ToList().Count)  @*item.Places.Count*@
+            @*</td>*@
+            <td>
+                <a asp-action="Edit" asp-route-id="@trip.Id">Edit</a> |  @*@item.Id*@
+                <a asp-action="Details" asp-route-id="@trip.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@trip.Id">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
