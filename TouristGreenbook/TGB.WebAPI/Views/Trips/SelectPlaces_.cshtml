@@ -1,0 +1,199 @@
+﻿@using Microsoft.AspNetCore.Http.Features.Authentication
+@model IEnumerable<TGB.WebAPI.Models.Place> 
+    @*Dictionary<string, List<Place>>()*@
+
+@{
+    ViewData["Title"] = "Choose needed places";
+}
+
+<div id="select_places">
+    <div id="tags">
+        @{
+            foreach (var element in ViewBag.TagedPlace)
+            {
+                <table class="table table-striped table-hover table-condensed">
+                    <thead class="">
+                    <tr>
+                        <th>
+                            
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Type)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Address)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.WorkTimeStart)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Rating)
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            <tr>
+                                <h3>@element.Key</h3>
+                            </tr>
+                            {
+                                foreach (var place in Model) //(var place in element.Value)
+                                {
+                                    if (place.Type==element.Key)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)" />
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Type)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Address)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => place.Rating)
+                                            </td>
+                                        </tr>
+                                    }
+                                            
+                                            
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+
+        @*<table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" name="selectAll" />
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkTimeStart)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Rating)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var element in ViewBag.TagedPlace)
+                    {
+                        <tr>
+                            <h3>@element.Key</h3>
+                        </tr>
+                        {
+                            foreach (var place in Model) //(var place in element.Value)
+                            {
+                                if (place.Type==element.Key)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="@place.GetHashCode()" />
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Type)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Address)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => place.Rating)
+                                        </td>
+                                    </tr>
+                                }
+                                
+                                
+                            }
+                        }
+
+                    }
+                }
+            </tbody>
+        </table>*@
+        <button class="btn btn-light" type="submit" onclick="">Create</button>
+    </div>
+    <div id="path">
+
+    </div>
+    <div id="info">
+        <h3>Information</h3>
+        <p id="description"></p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function changePlaceState(paramName) {
+        //console.log(paramName.checked);
+        if ((paramName.checked == true)) {
+
+            // ToDo show on GoogleMaps
+            var chB = paramName;
+            $("div").text(paramName.name + " checked!");
+        } else {
+            
+            // ToDo get out from google maps 
+            var chB = paramName;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function getCheckedPlaces() {
+        var checkedB = document.querySelectorAll("input[type=checkbox]:checked");
+        //var places = @Model;
+        //var places = new type();
+        for (var i = 0; i < checkedB.length; i++) {
+            var chB = checkedB[i];
+            
+        }
+
+        //$("div").text(checkedB.length);
+    }
+</script>
+<script type="text/javascript">
+    function CreatePath() {
+        
+    }
+</script>

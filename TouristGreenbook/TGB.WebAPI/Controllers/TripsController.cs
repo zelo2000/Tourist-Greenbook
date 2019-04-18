@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using TGB.WebAPI.Data;
 using TGB.WebAPI.Models;
 
@@ -70,7 +71,7 @@ namespace TGB.WebAPI.Controllers
 
         // POST: Trips/CreateFinal
         [HttpPost]
-        public IActionResult CreateFinal(string city, DateTime startDate, TimeSpan startTime, DateTime finishDate, TimeSpan finishTime, double budget, string[] chosenTags)
+        public IActionResult SelectPlaces(string city, DateTime startDate, TimeSpan startTime, DateTime finishDate, TimeSpan finishTime, double budget, string[] chosenTags)
         {
             startDate = startDate.AddHours(startTime.Hours);
             startDate = startDate.AddMinutes(startTime.Minutes);
@@ -100,12 +101,38 @@ namespace TGB.WebAPI.Controllers
             foreach (var tag in chosenTags)
             {
                 tagedPlace.Add(tag, (_context.Places.Where(x => x.City == city && x.Type == tag)).ToList());
-                tagedPlaces.AddRange(_context.Places.Where(x => x.City == city && x.Type == tag));
+                tagedPlaces.AddRange(_context.Places.Where(x => x.City == city && x.Type == tag 
+                                                                               && x.State == PlaceState.Сonfirmed));
             }
 
             ViewBag.TagedPlace = tagedPlace;
 
             return View(tagedPlaces);
+            //return View(tagedPlaces);
+        }
+
+        //public void AddChecked(string[] ids)
+        //{
+            
+        //}
+
+        [HttpPost]
+        public IActionResult CreateTrip(string ids)
+        {
+            string [] arr =ids.Split('*');
+            int[] rez = new int[arr.GetLength(0)];
+            for (var i=0; i < arr.GetLength(0); i++)
+            {
+                rez[i] = int.Parse(arr[i]);
+                // ПЕРЕВЕДИ В ІНТИ І ЗАКИНЬ ТО ВСЬО В МАСИВ REZ
+            }
+            foreach (var id in rez)
+            {
+                _newTrip.Places.Add(_context.Places.FirstOrDefault(pl=>pl.Id==id));
+            }
+
+            _context.Trips.Add(_newTrip);
+            return View();
         }
 
 
