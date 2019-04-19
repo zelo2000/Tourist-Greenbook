@@ -40,5 +40,10 @@ namespace TGB.WebAPI.Models
         /// User id who make trip
         /// </summary>
         public string ConcreteUserId { get; set; }
+
+        public Trip()
+        {
+            ConcreteUser = new ConcreteUser();
+        }
     }
 }
