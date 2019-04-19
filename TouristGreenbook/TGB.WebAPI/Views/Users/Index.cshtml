@@ -8,9 +8,15 @@
 <table class="table">
     <thead>
         <tr>
-            <th>User name</th>
-            <th>Email</th>
-            <th>Phone number</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["UserNameSortParm"]">@Html.DisplayNameFor(model => model.UserName)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]">@Html.DisplayNameFor(model => model.Email)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PhoneNumberSortParm"]">@Html.DisplayNameFor(model => model.PhoneNumber)</a>
+            </th>
             <th></th>
         </tr>
     </thead>

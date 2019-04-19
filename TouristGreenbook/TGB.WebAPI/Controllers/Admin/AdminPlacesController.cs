@@ -22,9 +22,77 @@ namespace TGB.WebAPI.Controllers.Admin
         }
 
         // GET: AdminPlaces
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var applicationDbContext = _context.Places.Include(p => p.Trip);
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
+            ViewData["TypeSortParm"] = sortOrder == "Type" ? "TypeDesc" : "Type";
+            ViewData["CitySortParm"] = sortOrder == "City" ? "CityDesc" : "City";
+            ViewData["AddressSortParm"] = sortOrder == "Address" ? "AddressDesc" : "Address";
+            ViewData["WorkTimeStartSortParm"] = sortOrder == "WorkTimeStart" ? "WorkTimeStartDesc" : "WorkTimeStart";
+            ViewData["WorkTimeFinishSortParm"] = sortOrder == "WorkTimeFinish" ? "WorkTimeFinishDesc" : "WorkTimeFinish";
+            ViewData["StateSortParm"] = sortOrder == "State" ? "StateDesc" : "State";
+            ViewData["DescriptionSortParm"] = sortOrder == "Description" ? "DescriptionDesc" : "Description";
+            ViewData["RatingSortParm"] = sortOrder == "Rating" ? "RatingDesc" : "Rating";
+            var places = from p in _context.Places
+                        select p;
+            switch (sortOrder)
+            {
+                case "NameDesc":
+                    places = places.OrderByDescending(u => u.Name);
+                    break;
+                case "City":
+                    places = places.OrderBy(s => s.City);
+                    break;
+                case "CityDesc":
+                    places = places.OrderByDescending(u => u.City);
+                    break;
+                case "Rating":
+                    places = places.OrderBy(s => s.Rating);
+                    break;
+                case "RatingDesc":
+                    places = places.OrderByDescending(u => u.Rating);
+                    break;
+                case "Address":
+                    places = places.OrderBy(s => s.Address);
+                    break;
+                case "AddressDesc":
+                    places = places.OrderByDescending(u => u.Address);
+                    break;
+                case "State":
+                    places = places.OrderBy(s => s.State);
+                    break;
+                case "StateDesc":
+                    places = places.OrderByDescending(u => u.State);
+                    break;
+                case "Description":
+                    places = places.OrderBy(s => s.Description);
+                    break;
+                case "DescriptionDesc":
+                    places = places.OrderByDescending(u => u.Description);
+                    break;
+                case "WorkTimeStart":
+                    places = places.OrderBy(s => s.WorkTimeStart);
+                    break;
+                case "WorkTimeStartDesc":
+                    places = places.OrderByDescending(u => u.WorkTimeStart);
+                    break;
+                case "WorkTimeFinish":
+                    places = places.OrderBy(s => s.WorkTimeFinish);
+                    break;
+                case "WorkTimeFinishDesc":
+                    places = places.OrderByDescending(u => u.WorkTimeFinish);
+                    break;
+                case "Type":
+                    places = places.OrderBy(s => s.Type);
+                    break;
+                case "TypeDesc":
+                    places = places.OrderByDescending(u => u.Type);
+                    break;
+                default:
+                    places = places.OrderBy(s => s.Name);
+                    break;
+            }
+            var applicationDbContext = places.Include(p => p.Trip);
             return View(await applicationDbContext.ToListAsync());
         }
 

@@ -13,31 +13,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]">@Html.DisplayNameFor(model => model.Type)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.City)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CitySortParm"]">@Html.DisplayNameFor(model => model.City)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AddressSortParm"]">@Html.DisplayNameFor(model => model.Address)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WorkTimeStart)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["WorkTimeStartSortParm"]">@Html.DisplayNameFor(model => model.WorkTimeStart)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["WorkTimeFinishSortParm"]">@Html.DisplayNameFor(model => model.WorkTimeFinish)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.State)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["StateSortParm"]">@Html.DisplayNameFor(model => model.State)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">@Html.DisplayNameFor(model => model.Description)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rating)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["RatingSortParm"]">@Html.DisplayNameFor(model => model.Rating)</a>
             </th>
             <th></th>
         </tr>
