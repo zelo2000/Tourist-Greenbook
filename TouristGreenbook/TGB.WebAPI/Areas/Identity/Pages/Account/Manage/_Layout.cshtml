@@ -1,9 +1,19 @@
-﻿@{ 
+﻿@{
     Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 }
 
 <h2>Manage your account</h2>
-
+@if (User.IsInRole("Admin"))
+{
+    <a asp-area="" asp-controller="Role" asp-action="Index">Manage Roles</a>
+    <br />
+    <a asp-area="" asp-controller="Users" asp-action="Index">Manage Users</a>
+    <br />
+    <a asp-area="" asp-controller="AdminPlaces" asp-action="Index">Manage Places</a>
+    <br />
+    <a asp-area="" asp-controller="AdminTrips" asp-action="Index">Manage Trips</a>
+    <br />
+}
 <div>
     <h4>Change your account settings</h4>
     <hr />
