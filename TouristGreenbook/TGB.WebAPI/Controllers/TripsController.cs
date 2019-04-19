@@ -37,6 +37,7 @@ namespace TGB.WebAPI.Controllers
                 Places = await _context.Places.ToListAsync(),
                 //PlacesInTrip = tpl,
             };
+            
             return View(trips); //await _context.Trips.ToListAsync() trips
         }
 
@@ -61,7 +62,7 @@ namespace TGB.WebAPI.Controllers
         // GET: Trips/Create ///<controller>/
         public IActionResult Create()//InitialStage()
         {
-            var cities = _context.Trips
+            var cities = _context.Places
                 .Select(x => x.City)
                 .Distinct()
                 .ToList();
@@ -205,7 +206,13 @@ namespace TGB.WebAPI.Controllers
             {
                 return NotFound();
             }
-            return View(trips);
+            var trp = new TripWithPlaces()
+            {
+                Trips = new List<Trip>(){trips},
+                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trips.Id).ToListAsync(),
+            };
+
+            return View(trp); //trips
         }
 
         // POST: Trips/Edit/5
@@ -219,11 +226,18 @@ namespace TGB.WebAPI.Controllers
             {
                 return NotFound();
             }
-
+            var trp = new TripWithPlaces()
+            {
+                Trips = new List<Trip>() { trip },
+                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync(),
+            }; ;
             if (ModelState.IsValid)
             {
+                
                 try
                 {
+                    //trp.Places = ; //Bind Places 
+                    
                     _context.Update(trip);
                     await _context.SaveChangesAsync();
                 }
@@ -240,7 +254,7 @@ namespace TGB.WebAPI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(trip);
+            return View(trp); //trip
         }
 
         // GET: Trips/Delete/5

@@ -1,54 +1,72 @@
-﻿@model TGB.WebAPI.Models.Trip
+﻿@using System.Linq
+@model TGB.WebAPI.Models.TripWithPlaces
+@*TGB.WebAPI.Models.Trip*@
 
-@{
-    ViewData["Title"] = "Edit";
-}
+    @{
+        ViewData["Title"] = "Edit";
+    }
 
-<h2>Edit</h2>
+    <h2>Edit</h2>
 
-<h4>Trips</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StayTimeStart" class="control-label"></label>
-                <input asp-for="StayTimeStart" class="form-control" />
-                <span asp-validation-for="StayTimeStart" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StayTimeFinish" class="control-label"></label>
-                <input asp-for="StayTimeFinish" class="form-control" />
-                <span asp-validation-for="StayTimeFinish" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Budget" class="control-label"></label>
-                <input asp-for="Budget" class="form-control" />
-                <span asp-validation-for="Budget" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Places" class="control-label"></label>
-                <input asp-for="Places" class="form-control" />
-                <span asp-validation-for="Places" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+    <h4>Trip</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="@Model.Trips[0].Id" />
+                <div class="form-group">
+                    <label asp-for="@Model.Trips[0].City" class="control-label"></label>
+                    <input asp-for="@Model.Trips[0].City" class="form-control" />
+                    <span asp-validation-for="@Model.Trips[0].City" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Trips[0].StayTimeStart" class="control-label"></label>
+                    <input asp-for="@Model.Trips[0].StayTimeStart" class="form-control" />
+                    <span asp-validation-for="@Model.Trips[0].StayTimeStart" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Trips[0].StayTimeFinish" class="control-label"></label>
+                    <input asp-for="@Model.Trips[0].StayTimeFinish" class="form-control" />
+                    <span asp-validation-for="@Model.Trips[0].StayTimeFinish" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Trips[0].Budget" class="control-label"></label>
+                    <input asp-for="@Model.Trips[0].Budget" class="form-control" />
+                    <span asp-validation-for="@Model.Trips[0].Budget" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Places" class="control-label"></label>
+                    @{
+                        var places = Model.Places.Where(pl => pl.Trip != null && pl.Trip.Id == Model.Trips[0].Id).ToList();
+                        foreach (var place in @Model.Places.Where(pl => pl.Trip != null && pl.Trip.Id == Model.Trips[0].Id))
+                        {
+                            <p>@place.Name, @place.Address, @place.Type</p>
+                        }
+                    }
+                    <p>@Model.Places.Where(pl => pl.Trip != null && pl.Trip.Id == Model.Trips[0].Id)</p>
+                    @*<input asp-for="@Model.Places.Where(pl => pl.Trip!=null && pl.Trip.Id == Model.Trips[0].Id)" class="form-control" />*@
+                    @*<span asp-validation-for="Places" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+    <div class="row">
+        <table class="table table-striped table-hover table-condensed">
+            <thead>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+            </thead>
+        </table>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
