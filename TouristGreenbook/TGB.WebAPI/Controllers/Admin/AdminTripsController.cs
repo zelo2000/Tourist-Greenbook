@@ -26,9 +26,42 @@ namespace TGB.WebAPI.Controllers.Admin
         }
 
         // GET: AdminTrips
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var applicationDbContext = _context.Trips.Include(t => t.ConcreteUser).ToList();
+            ViewData["CitySortParm"] = String.IsNullOrEmpty(sortOrder) ? "CityDesc" : "";
+            ViewData["StayTimeStartSortParm"] = sortOrder == "StayTimeStart" ? "StayTimeStartDesc" : "StayTimeStart";
+            ViewData["StayTimeFinishSortParm"] = sortOrder == "StayTimeFinish" ? "StayTimeFinishDesc" : "StayTimeFinish";
+            ViewData["BudgetSortParm"] = sortOrder == "Budget" ? "BudgetDesc" : "Budget";
+            var trips = from t in _context.Trips
+                        select t;
+            switch (sortOrder)
+            {
+                case "CityDesc":
+                    trips = trips.OrderByDescending(u => u.City);
+                    break;
+                case "StayTimeStart":
+                    trips = trips.OrderBy(s => s.StayTimeStart);
+                    break;
+                case "StayTimeStartDesc":
+                    trips = trips.OrderByDescending(s => s.StayTimeStart);
+                    break;
+                case "StayTimeFinish":
+                    trips = trips.OrderBy(s => s.StayTimeFinish);
+                    break;
+                case "StayTimeFinishDesc":
+                    trips = trips.OrderByDescending(s => s.StayTimeFinish);
+                    break;
+                case "Budget":
+                    trips = trips.OrderBy(s => s.Budget);
+                    break;
+                case "BudgetDesc":
+                    trips = trips.OrderByDescending(s => s.Budget);
+                    break;
+                default:
+                    trips = trips.OrderBy(s => s.City);
+                    break;
+            }
+            var applicationDbContext = trips.Include(t => t.ConcreteUser).ToList();
             foreach (var item in applicationDbContext)
             {
                 if (item.ConcreteUserId != null)

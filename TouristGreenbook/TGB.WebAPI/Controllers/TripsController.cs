@@ -22,24 +22,51 @@ namespace TGB.WebAPI.Controllers
         }
 
         // GET: Trips
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var tpl = new SortedDictionary<Trip, List<Place>>();
+            //var tpl = new SortedDictionary<Trip, List<Place>>();
             
-            var tempTrips = await _context.Trips.ToListAsync();
-            //foreach (var tempTrip in tempTrips)
-            //{
-            //    tpl.Add(tempTrip, await _context.Places.Where(pl => pl.Trip.Id==tempTrip.Id).ToListAsync()); //.Where(pl=>pl.Id==pl.Id)
-            //}
-
             TripWithPlaces trips = new TripWithPlaces()
             {
                 Trips = await _context.Trips.ToListAsync(),
-                Places = await _context.Places.ToListAsync(),
-                //PlacesInTrip = tpl,
+                Places = await _context.Places.ToListAsync(),                
             };
             
-            return View(trips); //await _context.Trips.ToListAsync() trips
+            ViewData["CitySortParm"] = String.IsNullOrEmpty(sortOrder) ? "CityDesc" : "";
+            ViewData["StayTimeStartSortParm"] = sortOrder == "StayTimeStart" ? "StayTimeStartDesc" : "StayTimeStart";
+            ViewData["StayTimeFinishSortParm"] = sortOrder == "StayTimeFinish" ? "StayTimeFinishDesc" : "StayTimeFinish";
+            ViewData["BudgetSortParm"] = sortOrder == "Budget" ? "BudgetDesc" : "Budget";
+            //var trips = from t in _context.Trips
+            //            select t;
+            
+	    switch (sortOrder)
+            {
+                case "CityDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(u => u.City).ToList();
+                    break;
+                case "StayTimeStart":
+                    trips.Trips = trips.Trips.OrderBy(s => s.StayTimeStart).ToList();
+                    break;
+                case "StayTimeStartDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(s => s.StayTimeStart).ToList();
+                    break;
+                case "StayTimeFinish":
+                    trips.Trips = trips.Trips.OrderBy(s => s.StayTimeFinish).ToList();
+                    break;
+                case "StayTimeFinishDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(s => s.StayTimeFinish).ToList();
+                    break;
+                case "Budget":
+                    trips.Trips = trips.Trips.OrderBy(s => s.Budget).ToList();
+                    break;
+                case "BudgetDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(s => s.Budget).ToList();
+                    break;
+                default:
+                    trips.Trips = trips.Trips.OrderBy(s => s.City).ToList();
+                    break;
+            }
+            return View(trips); //await trips.AsNoTracking().ToListAsync()
         }
 
         // GET: Trips/Details/5
