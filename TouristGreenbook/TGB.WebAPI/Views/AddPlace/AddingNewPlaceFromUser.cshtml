@@ -75,9 +75,9 @@
 
 
 <div>
-    <div id="map"></div>
+
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&language=ua&callback=initMap">
     </script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript">
@@ -87,7 +87,7 @@
             var myLatlng = new google.maps.LatLng(49.8382600, 24.0232400);
 
             var myOptions = {
-                zoom: 8,
+                zoom: 13,
                 center: myLatlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
@@ -115,7 +115,7 @@
             google.maps.event.addListener(map, 'click', function (event) {
                 document.getElementById("lat").value = event.latLng.lat();
                 document.getElementById("long").value = event.latLng.lng();
-                document.getElementById("coord").value = event.latLng;
+                //document.getElementById("coord").value = event.latLng;
                 marker.setPosition(event.latLng);
                 
             });

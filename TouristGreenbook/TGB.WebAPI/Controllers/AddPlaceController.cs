@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using TGB.WebAPI.Data;
 using TGB.WebAPI.Models;
@@ -33,6 +34,7 @@ namespace TGB.WebAPI.Controllers
         [HttpPost]
         public IActionResult AddingPlaceToDataBase(string name, string type, string city, string address, TimeSpan workTimeStart, TimeSpan workTimeFinish, double latitude, double longtitude, string description)
         {
+
             Point newPoint = new Point(latitude, longtitude);
             Place newPlace = new Place
             {
@@ -46,6 +48,7 @@ namespace TGB.WebAPI.Controllers
                 Description = description
             };
             _context.Places.Add(newPlace);
+            _context.Points.Add(newPoint);
             _context.SaveChanges();
 
             return View();
