@@ -10,7 +10,7 @@ using TGB.WebAPI.Data;
 namespace TGB.WebAPI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190418133737_ChangeModelMigration")]
+    [Migration("20190418194506_ChangeModelMigration")]
     partial class ChangeModelMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

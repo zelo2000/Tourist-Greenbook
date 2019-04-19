@@ -57,5 +57,9 @@ namespace TGB.WebAPI.Models
         /// A trip to which is related current place
         /// </summary>
         public Trip Trip { get; set; }
+        /// <summary>
+        /// Place's trip id 
+        /// </summary>
+        public int? TripId { get; set; }
     }
 }
