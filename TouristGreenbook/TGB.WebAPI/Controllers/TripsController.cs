@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Extensions.Internal;
 using Newtonsoft.Json;
 using TGB.WebAPI.Data;
 using TGB.WebAPI.Models;
@@ -114,20 +115,20 @@ namespace TGB.WebAPI.Controllers
 
         // POST: Trips/CreateFinal
         [HttpPost]
-        public IActionResult SelectPlaces(string city, DateTime startDate, TimeSpan startTime, 
-            DateTime finishDate, TimeSpan finishTime, double budget, string[] chosenTags, string sortOrder)
+        public async Task<IActionResult> SelectPlaces(string city, DateTime startDate, TimeSpan startTime, 
+            DateTime finishDate, TimeSpan finishTime, double budget, string[] chosenTags)//, string sortOrder)
         {
             startDate = startDate.AddHours(startTime.Hours);
             startDate = startDate.AddMinutes(startTime.Minutes);
             finishDate = finishDate.AddHours(finishTime.Hours);
             finishDate = finishDate.AddMinutes(finishTime.Minutes);
             
-            ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
-            ViewData["WorkTimeStartSortParam"] = sortOrder == "WorkTimeStart" ? "WorkTimeStartDesc" : "WorkTimeStart";
-            ViewData["WorkTimeFinishSortParam"] = sortOrder == "WorkTimeFinish" ? "WorkTimeFinishDesc" : "WorkTimeFinish";
-            ViewData["RatingSortParam"] = sortOrder == "Rating" ? "RatingDesc" : "Rating";
-            ViewData["TypeSortParam"] = sortOrder == "Type" ? "TypeDesc" : "Type";
-            ViewData["AddressSortParam"] = sortOrder == "Address" ? "AddressDesc" : "Address";
+            //ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
+            //ViewData["WorkTimeStartSortParam"] = sortOrder == "WorkTimeStart" ? "WorkTimeStartDesc" : "WorkTimeStart";
+            //ViewData["WorkTimeFinishSortParam"] = sortOrder == "WorkTimeFinish" ? "WorkTimeFinishDesc" : "WorkTimeFinish";
+            //ViewData["RatingSortParam"] = sortOrder == "Rating" ? "RatingDesc" : "Rating";
+            //ViewData["TypeSortParam"] = sortOrder == "Type" ? "TypeDesc" : "Type";
+            //ViewData["AddressSortParam"] = sortOrder == "Address" ? "AddressDesc" : "Address";
 
             var tagedPlace = new Dictionary<string, List<Place>>();
             var tagedPlaces = new List<Place>();
@@ -140,48 +141,52 @@ namespace TGB.WebAPI.Controllers
 
             ViewBag.TagedPlace = tagedPlace;
             
-            //return View(tagedPlaces);
-            
-            switch (sortOrder)
-            {
-                case "NameDesc":
-                    tagedPlaces = tagedPlaces.OrderByDescending(u => u.Name).ToList();
-                    break;
-                case "Type":
-                    tagedPlaces = tagedPlaces.OrderBy(s => s.Type).ToList();
-                    break;
-                case "TypeDesc":
-                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.Type).ToList();
-                    break;
-                case "Address":
-                    tagedPlaces = tagedPlaces.OrderBy(s => s.Address).ToList();
-                    break;
-                case "AddressDesc":
-                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.Address).ToList();
-                    break;
-                case "WorkTimeStart":
-                    tagedPlaces = tagedPlaces.OrderBy(s => s.WorkTimeStart).ToList();
-                    break;
-                case "WorkTimeStartDesc":
-                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.WorkTimeStart).ToList();
-                    break;
-                case "WorkTimeFinish":
-                    tagedPlaces = tagedPlaces.OrderBy(s => s.WorkTimeFinish).ToList();
-                    break;
-                case "WorkTimeFinishDesc":
-                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.WorkTimeFinish).ToList();
-                    break;
-                case "Rating":
-                    tagedPlaces = tagedPlaces.OrderBy(s => s.Rating).ToList();
-                    break;
-                case "RatingDesc":
-                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.Rating).ToList();
-                    break;
-                default:
-                    tagedPlaces = tagedPlaces.OrderBy(s => s.Name).ToList();
-                    break;
-            }
             return View(tagedPlaces);
+            //var tmpTagedPlaces1 = from pl in tagedPlaces
+            //                        select pl;
+            //var tmpTagedPlaces = tmpTagedPlaces1.AsQueryable();
+            //switch (sortOrder)
+            //{
+            //    case "NameDesc":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderByDescending(u => u.Name);//.ToList();
+            //        break;
+            //    case "Type":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderBy(s => s.Type);//.ToList();
+            //        break;
+            //    case "TypeDesc":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderByDescending(s => s.Type);//.ToList();
+            //        break;
+            //    case "Address":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderBy(s => s.Address);//.ToList();
+            //        break;
+            //    case "AddressDesc":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderByDescending(s => s.Address);//.ToList();
+            //        break;
+            //    case "WorkTimeStart":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderBy(s => s.WorkTimeStart);//.ToList();
+            //        break;
+            //    case "WorkTimeStartDesc":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderByDescending(s => s.WorkTimeStart);//.ToList();
+            //        break;
+            //    case "WorkTimeFinish":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderBy(s => s.WorkTimeFinish);//.ToList();
+            //        break;
+            //    case "WorkTimeFinishDesc":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderByDescending(s => s.WorkTimeFinish);//.ToList();
+            //        break;
+            //    case "Rating":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderBy(s => s.Rating);//.ToList();
+            //        break;
+            //    case "RatingDesc":
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderByDescending(s => s.Rating);//.ToList();
+            //        break;
+            //    default:
+            //        tmpTagedPlaces = tmpTagedPlaces.OrderBy(s => s.Name);//.ToList();
+            //        break;
+            //}
+
+            
+            //return View(await tmpTagedPlaces.AsNoTracking().ToListAsync());
         }
     
 

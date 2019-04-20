@@ -18,47 +18,41 @@
                                 <th>
 
                                 </th>
-                                <th>
-                                    @*onclick="sortTable(1)"*@
-                                    <a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["NameSortParam"]">
+                                <th onclick="sortTable(1, table.id)">
+                                    @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["NameSortParam"]">
                                         @Html.DisplayNameFor(model => model.Name)
-                                    </a>
-                                    @*@Html.DisplayNameFor(model => model.Name)*@
+                                    </a>*@
+                                    @Html.DisplayNameFor(model => model.Name)
                                 </th>
-                                <th>
-                                    @*onclick="sortTable(2)"
-                                    @Html.DisplayNameFor(model => model.Type)*@
-                                    <a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["TypeSortParam"]">
+                                <th onclick="sortTable(2, table.id)">
+                                    @Html.DisplayNameFor(model => model.Type)
+                                    @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["TypeSortParam"]">
                                         @Html.DisplayNameFor(model => model.Type)
-                                    </a>
+                                    </a>*@
                                 </th>
-                                <th>
-                                    @*onclick="sortTable(3)"
-                                    @Html.DisplayNameFor(model => model.Address)*@
-                                    <a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["AddressSortParam"]">
+                                <th onclick="sortTable(3, table.id)">
+                                    @Html.DisplayNameFor(model => model.Address)
+                                    @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["AddressSortParam"]">
                                         @Html.DisplayNameFor(model => model.Address)
-                                    </a>
+                                    </a>*@
                                 </th>
-                                <th>
-                                    @*onclick="sortTable(4)"
-                                    @Html.DisplayNameFor(model => model.WorkTimeStart)*@
-                                    <a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeStartSortParam"]">
+                                <th onclick="sortTable(4, table.id)">
+                                    @Html.DisplayNameFor(model => model.WorkTimeStart)
+                                    @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeStartSortParam"]">
                                         @Html.DisplayNameFor(model => model.WorkTimeStart)
-                                    </a>
+                                    </a>*@
                                 </th>
-                                <th>
-                                    @*onclick="sortTable(5)"
-                                    @Html.DisplayNameFor(model => model.WorkTimeFinish)*@
-                                    <a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeFinishSortParam"]">
+                                <th onclick="sortTable(5, table.id)">
+                                    @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                                    @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeFinishSortParam"]">
                                         @Html.DisplayNameFor(model => model.WorkTimeFinish)
-                                    </a>
+                                    </a>*@
                                 </th>
-                                <th>
-                                    @*onclick="sortTable(6)"
-                                    @Html.DisplayNameFor(model => model.Rating)*@
-                                    <a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["RatingSortParam"]">
+                                <th onclick="sortTable(6, table.id)">
+                                    @Html.DisplayNameFor(model => model.Rating)
+                                    @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["RatingSortParam"]">
                                         @Html.DisplayNameFor(model => model.Rating)
-                                    </a>
+                                    </a>*@
                                 </th>
                             </tr>
                         </thead>
@@ -255,9 +249,9 @@
             });
     }
 
-    function sortTable(n) {
+    function sortTable(n, tableId) {
         var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        table = document.getElementById("myTable2");
+        table = document.getElementById(tableId);
         switching = true;
         // Set the sorting direction to ascending:
         dir = "asc"; 
