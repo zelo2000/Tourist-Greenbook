@@ -16,6 +16,15 @@
         </div>
     </div>
 </div>
+@if (User.Identity.IsAuthenticated)
+{
+    if (User.IsInRole("Admin"))
+    {
+        <div>
+            <a asp-controller="Home" asp-action="AdminView">Back to List</a>
+        </div>
+    }
+}
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
