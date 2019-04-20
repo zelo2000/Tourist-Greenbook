@@ -1,21 +1,36 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+﻿@model ReflectionIT.Mvc.Paging.PagingList<Microsoft.AspNetCore.Identity.IdentityUser>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <h2>Users</h2>
 
-<table class="table">
+<form method="get" class="form-inline">
+    <input name="filter" class="form-control" placeholder="filter"
+           value="@Model.RouteValue["Filter"]" />
+    <button type="submit" class="btn btn-info">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search by Email
+    </button>
+</form>
+
+<nav aria-label="Suppliers navigation example">
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["UserNameSortParm"]">@Html.DisplayNameFor(model => model.UserName)</a>
+                @Html.SortableHeaderFor(model => model.UserName, "UserName", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]">@Html.DisplayNameFor(model => model.Email)</a>
+                @Html.SortableHeaderFor(model => model.Email, "Email", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PhoneNumberSortParm"]">@Html.DisplayNameFor(model => model.PhoneNumber)</a>
+                @Html.SortableHeaderFor(model => model.PhoneNumber, "PhoneNumber", this.Model)
             </th>
             <th></th>
         </tr>
@@ -46,3 +61,10 @@
     </tbody>
 </table>
 
+<nav aria-label="Suppliers navigation example">
+    <vc:pager paging-list="@Model" />
+</nav>
+
+<div>
+    <a asp-controller="Home" asp-action="AdminView">Back to List</a>
+</div>

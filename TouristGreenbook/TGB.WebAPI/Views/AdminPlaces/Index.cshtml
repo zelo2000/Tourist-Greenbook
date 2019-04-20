@@ -1,82 +1,104 @@
-﻿@model IEnumerable<TGB.WebAPI.Models.Place>
+﻿@model ReflectionIT.Mvc.Paging.PagingList<TGB.WebAPI.Models.Place>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Place</h2>
 
+<form method="get" class="form-inline">
+    <input name="filter" class="form-control" placeholder="filter"
+           value="@Model.RouteValue["Filter"]" />
+    <button type="submit" class="btn btn-info">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search by Name
+    </button>
+</form>
+
+<nav aria-label="Suppliers navigation example">
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
 <p>
     <a asp-area="" asp-controller="AddPlace" asp-action="AddingNewPlaceFromUser">Create new</a>
 </p>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
+                @Html.SortableHeaderFor(model => model.Name, "Name", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]">@Html.DisplayNameFor(model => model.Type)</a>
+                @Html.SortableHeaderFor(model => model.Type, "Type", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CitySortParm"]">@Html.DisplayNameFor(model => model.City)</a>
+                @Html.SortableHeaderFor(model => model.City, "City", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["AddressSortParm"]">@Html.DisplayNameFor(model => model.Address)</a>
+                @Html.SortableHeaderFor(model => model.Address, "Address", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["WorkTimeStartSortParm"]">@Html.DisplayNameFor(model => model.WorkTimeStart)</a>
+                @Html.SortableHeaderFor(model => model.WorkTimeStart, "WorkTimeStart", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["WorkTimeFinishSortParm"]">@Html.DisplayNameFor(model => model.WorkTimeFinish)</a>
+                @Html.SortableHeaderFor(model => model.WorkTimeFinish, "WorkTimeFinish", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["StateSortParm"]">@Html.DisplayNameFor(model => model.State)</a>
+                @Html.SortableHeaderFor(model => model.State, "State", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]">@Html.DisplayNameFor(model => model.Description)</a>
+                @Html.SortableHeaderFor(model => model.Description, "Description", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["RatingSortParm"]">@Html.DisplayNameFor(model => model.Rating)</a>
+                @Html.SortableHeaderFor(model => model.Rating, "Rating", this.Model)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WorkTimeStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WorkTimeFinish)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.State)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkTimeStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkTimeFinish)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<nav aria-label="Suppliers navigation example">
+    <vc:pager paging-list="@Model" />
+</nav>
+
+<div>
+    <a asp-controller="Home" asp-action="AdminView">Back to List</a>
+</div>
