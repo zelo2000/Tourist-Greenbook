@@ -1,18 +1,33 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+﻿@model ReflectionIT.Mvc.Paging.PagingList<Microsoft.AspNetCore.Identity.IdentityRole>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2> Roles</h2>
+<h2>Roles</h2>
+
+<form method="get" class="form-inline">
+    <input name="filter" class="form-control" placeholder="filter"
+           value="@Model.RouteValue["Filter"]" />
+    <button type="submit" class="btn btn-info">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search by Name
+    </button>
+</form>
+
+<nav aria-label="Suppliers navigation example">
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
+                @Html.SortableHeaderFor(model => model.Name, "Name", this.Model)
             </th>
             <th></th>
         </tr>
@@ -31,3 +46,10 @@
         }
     </tbody>
 </table>
+<nav aria-label="Suppliers navigation example">
+    <vc:pager paging-list="@Model" />
+</nav>
+
+<div>
+    <a asp-controller="Home" asp-action="AdminView">Back to List</a>
+</div>
