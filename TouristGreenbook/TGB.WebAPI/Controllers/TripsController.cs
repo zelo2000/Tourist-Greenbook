@@ -114,30 +114,20 @@ namespace TGB.WebAPI.Controllers
 
         // POST: Trips/CreateFinal
         [HttpPost]
-        public IActionResult SelectPlaces(string city, DateTime startDate, TimeSpan startTime, DateTime finishDate, TimeSpan finishTime, double budget, string[] chosenTags)
+        public IActionResult SelectPlaces(string city, DateTime startDate, TimeSpan startTime, 
+            DateTime finishDate, TimeSpan finishTime, double budget, string[] chosenTags, string sortOrder)
         {
             startDate = startDate.AddHours(startTime.Hours);
             startDate = startDate.AddMinutes(startTime.Minutes);
             finishDate = finishDate.AddHours(finishTime.Hours);
             finishDate = finishDate.AddMinutes(finishTime.Minutes);
-            //_newTrip = new Trip()
-            //{
-            //    City = city,
-            //    StayTimeStart = startDate,
-            //    StayTimeFinish = finishDate,
-            //    Budget = budget
-            //};
-
-            //ViewBag.City = city;
-            //ViewBag.Start = startDate.ToString();
-            //ViewBag.Finish = finishDate.ToString();
-            //ViewBag.Budget = budget;
-            //ViewBag.ChosenTags = chosenTags;
-
-            //var tags = _context.Places
-            //    .Select(x => x.Type)
-            //    .Distinct()
-            //    .ToList();
+            
+            ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
+            ViewData["WorkTimeStartSortParam"] = sortOrder == "WorkTimeStart" ? "WorkTimeStartDesc" : "WorkTimeStart";
+            ViewData["WorkTimeFinishSortParam"] = sortOrder == "WorkTimeFinish" ? "WorkTimeFinishDesc" : "WorkTimeFinish";
+            ViewData["RatingSortParam"] = sortOrder == "Rating" ? "RatingDesc" : "Rating";
+            ViewData["TypeSortParam"] = sortOrder == "Type" ? "TypeDesc" : "Type";
+            ViewData["AddressSortParam"] = sortOrder == "Address" ? "AddressDesc" : "Address";
 
             var tagedPlace = new Dictionary<string, List<Place>>();
             var tagedPlaces = new List<Place>();
@@ -148,18 +138,54 @@ namespace TGB.WebAPI.Controllers
                                                                                && x.State == PlaceState.Сonfirmed));
             }
 
-            //TempData["_newTrip"] = _newTrip;
             ViewBag.TagedPlace = tagedPlace;
             
-            return View(tagedPlaces);
             //return View(tagedPlaces);
-        }
-
-        //public void AddChecked(string[] ids)
-        //{
             
-        //}
+            switch (sortOrder)
+            {
+                case "NameDesc":
+                    tagedPlaces = tagedPlaces.OrderByDescending(u => u.Name).ToList();
+                    break;
+                case "Type":
+                    tagedPlaces = tagedPlaces.OrderBy(s => s.Type).ToList();
+                    break;
+                case "TypeDesc":
+                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.Type).ToList();
+                    break;
+                case "Address":
+                    tagedPlaces = tagedPlaces.OrderBy(s => s.Address).ToList();
+                    break;
+                case "AddressDesc":
+                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.Address).ToList();
+                    break;
+                case "WorkTimeStart":
+                    tagedPlaces = tagedPlaces.OrderBy(s => s.WorkTimeStart).ToList();
+                    break;
+                case "WorkTimeStartDesc":
+                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.WorkTimeStart).ToList();
+                    break;
+                case "WorkTimeFinish":
+                    tagedPlaces = tagedPlaces.OrderBy(s => s.WorkTimeFinish).ToList();
+                    break;
+                case "WorkTimeFinishDesc":
+                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.WorkTimeFinish).ToList();
+                    break;
+                case "Rating":
+                    tagedPlaces = tagedPlaces.OrderBy(s => s.Rating).ToList();
+                    break;
+                case "RatingDesc":
+                    tagedPlaces = tagedPlaces.OrderByDescending(s => s.Rating).ToList();
+                    break;
+                default:
+                    tagedPlaces = tagedPlaces.OrderBy(s => s.Name).ToList();
+                    break;
+            }
+            return View(tagedPlaces);
+        }
+    
 
+        
         [HttpPost]
         public IActionResult CreateTrip(string ids, string trip)
         {
@@ -188,7 +214,7 @@ namespace TGB.WebAPI.Controllers
                 StayTimeFinish = DT2,
                 Budget = Convert.ToDouble(tripProps[5]),
                 Places = new List<Place>(),
-                ConcreteUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value
+                ConcreteUserId =  User.FindFirst(ClaimTypes.NameIdentifier).Value
             };
 
             //_newTrip = (Trip) TempData["_newTrip"];
