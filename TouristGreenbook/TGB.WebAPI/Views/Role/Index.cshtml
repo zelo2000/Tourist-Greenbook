@@ -11,7 +11,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Name</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
+            </th>
             <th></th>
         </tr>
     </thead>

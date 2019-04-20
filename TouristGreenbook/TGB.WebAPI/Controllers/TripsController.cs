@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +22,51 @@ namespace TGB.WebAPI.Controllers
         }
 
         // GET: Trips
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Trips.ToListAsync());
+            //var tpl = new SortedDictionary<Trip, List<Place>>();
+            
+            TripWithPlaces trips = new TripWithPlaces()
+            {
+                Trips = await _context.Trips.ToListAsync(),
+                Places = await _context.Places.ToListAsync(),                
+            };
+            
+            ViewData["CitySortParm"] = String.IsNullOrEmpty(sortOrder) ? "CityDesc" : "";
+            ViewData["StayTimeStartSortParm"] = sortOrder == "StayTimeStart" ? "StayTimeStartDesc" : "StayTimeStart";
+            ViewData["StayTimeFinishSortParm"] = sortOrder == "StayTimeFinish" ? "StayTimeFinishDesc" : "StayTimeFinish";
+            ViewData["BudgetSortParm"] = sortOrder == "Budget" ? "BudgetDesc" : "Budget";
+            //var trips = from t in _context.Trips
+            //            select t;
+            
+	    switch (sortOrder)
+            {
+                case "CityDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(u => u.City).ToList();
+                    break;
+                case "StayTimeStart":
+                    trips.Trips = trips.Trips.OrderBy(s => s.StayTimeStart).ToList();
+                    break;
+                case "StayTimeStartDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(s => s.StayTimeStart).ToList();
+                    break;
+                case "StayTimeFinish":
+                    trips.Trips = trips.Trips.OrderBy(s => s.StayTimeFinish).ToList();
+                    break;
+                case "StayTimeFinishDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(s => s.StayTimeFinish).ToList();
+                    break;
+                case "Budget":
+                    trips.Trips = trips.Trips.OrderBy(s => s.Budget).ToList();
+                    break;
+                case "BudgetDesc":
+                    trips.Trips = trips.Trips.OrderByDescending(s => s.Budget).ToList();
+                    break;
+                default:
+                    trips.Trips = trips.Trips.OrderBy(s => s.City).ToList();
+                    break;
+            }
+            return View(trips); //await trips.AsNoTracking().ToListAsync()
         }
 
         // GET: Trips/Details/5
@@ -47,7 +90,7 @@ namespace TGB.WebAPI.Controllers
         // GET: Trips/Create ///<controller>/
         public IActionResult Create()//InitialStage()
         {
-            var cities = _context.Trips
+            var cities = _context.Places
                 .Select(x => x.City)
                 .Distinct()
                 .ToList();
@@ -77,13 +120,13 @@ namespace TGB.WebAPI.Controllers
             startDate = startDate.AddMinutes(startTime.Minutes);
             finishDate = finishDate.AddHours(finishTime.Hours);
             finishDate = finishDate.AddMinutes(finishTime.Minutes);
-            _newTrip = new Trip()
-            {
-                City = city,
-                StayTimeStart = startDate,
-                StayTimeFinish = finishDate,
-                Budget = budget
-            };
+            //_newTrip = new Trip()
+            //{
+            //    City = city,
+            //    StayTimeStart = startDate,
+            //    StayTimeFinish = finishDate,
+            //    Budget = budget
+            //};
 
             //ViewBag.City = city;
             //ViewBag.Start = startDate.ToString();
@@ -105,8 +148,9 @@ namespace TGB.WebAPI.Controllers
                                                                                && x.State == PlaceState.Сonfirmed));
             }
 
+            //TempData["_newTrip"] = _newTrip;
             ViewBag.TagedPlace = tagedPlace;
-
+            
             return View(tagedPlaces);
             //return View(tagedPlaces);
         }
@@ -117,21 +161,45 @@ namespace TGB.WebAPI.Controllers
         //}
 
         [HttpPost]
-        public IActionResult CreateTrip(string ids)
+        public IActionResult CreateTrip(string ids, string trip)
         {
-            string [] arr =ids.Split('*');
-            int[] rez = new int[arr.GetLength(0)];
-            for (var i=0; i < arr.GetLength(0); i++)
+            string [] places =ids.Split('*');
+            int[] idsInt = new int[places.GetLength(0)];
+            for (var i=0; i < places.GetLength(0); i++)
             {
-                rez[i] = int.Parse(arr[i]);
-                // ПЕРЕВЕДИ В ІНТИ І ЗАКИНЬ ТО ВСЬО В МАСИВ REZ
+                idsInt[i] = int.Parse(places[i]);
             }
-            foreach (var id in rez)
+
+            string[] tripProps = trip.Split('|');
+            string tmpDate1 = tripProps[1] + " " + tripProps[2];
+            string tmpDate2 = tripProps[3] + " " + tripProps[4];
+            DateTime DT1 = Convert.ToDateTime(tmpDate1);
+            DateTime DT2 = Convert.ToDateTime(tmpDate2);
+            //for (var i = 0; i < tripProps.GetLength(0); i++)
+            //{
+            //    idsInt[i] = int.Parse(places[i]);
+            //}
+
+
+            _newTrip = new Trip()
             {
-                _newTrip.Places.Add(_context.Places.FirstOrDefault(pl=>pl.Id==id));
+                City = tripProps[0],
+                StayTimeStart =DT1,
+                StayTimeFinish = DT2,
+                Budget = Convert.ToDouble(tripProps[5]),
+                Places = new List<Place>(),
+                ConcreteUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value
+            };
+
+            //_newTrip = (Trip) TempData["_newTrip"];
+            foreach (var id in idsInt)
+            {
+                //_newTrip.Places.Add(_context.Places.FirstOrDefault(pl=>pl.Id==id));
+                _newTrip.Places.Add(_context.Places.SingleOrDefault(pl=>pl.Id==id));
             }
 
             _context.Trips.Add(_newTrip);
+            _context.SaveChanges();
             return View();
         }
 
@@ -167,7 +235,13 @@ namespace TGB.WebAPI.Controllers
             {
                 return NotFound();
             }
-            return View(trips);
+            var trp = new TripWithPlaces()
+            {
+                Trips = new List<Trip>(){trips},
+                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trips.Id).ToListAsync(),
+            };
+
+            return View(trp); //trips
         }
 
         // POST: Trips/Edit/5
@@ -181,11 +255,18 @@ namespace TGB.WebAPI.Controllers
             {
                 return NotFound();
             }
-
+            var trp = new TripWithPlaces()
+            {
+                Trips = new List<Trip>() { trip },
+                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync(),
+            }; ;
             if (ModelState.IsValid)
             {
+                
                 try
                 {
+                    //trp.Places = ; //Bind Places 
+                    
                     _context.Update(trip);
                     await _context.SaveChangesAsync();
                 }
@@ -202,7 +283,7 @@ namespace TGB.WebAPI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(trip);
+            return View(trp); //trip
         }
 
         // GET: Trips/Delete/5

@@ -6,34 +6,34 @@
     ViewData["Title"] = "Choose needed places";
 }
 
-<form action="CreateTrip" method="post">
+<form action="/Trips/CreateTrip" method="post">
     <div id="select_places">
         <div id="tags">
             @{
                 foreach (var element in ViewBag.TagedPlace)
                 {
-                    <table class="table table-striped table-hover table-condensed">
+                    <table id="table_@element.Key" class="table table-striped table-hover table-condensed">
                         <thead class="">
                             <tr>
                                 <th>
 
                                 </th>
-                                <th>
+                                <th onclick="sortTable(1)">
                                     @Html.DisplayNameFor(model => model.Name)
                                 </th>
-                                <th>
+                                <th onclick="sortTable(2)">
                                     @Html.DisplayNameFor(model => model.Type)
                                 </th>
-                                <th>
+                                <th onclick="sortTable(3)">
                                     @Html.DisplayNameFor(model => model.Address)
                                 </th>
-                                <th>
+                                <th onclick="sortTable(4)">
                                     @Html.DisplayNameFor(model => model.WorkTimeStart)
                                 </th>
-                                <th>
+                                <th onclick="sortTable(5)">
                                     @Html.DisplayNameFor(model => model.WorkTimeFinish)
                                 </th>
-                                <th>
+                                <th onclick="sortTable(6)">
                                     @Html.DisplayNameFor(model => model.Rating)
                                 </th>
                             </tr>
@@ -156,7 +156,8 @@
             @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces" />*@
 
         </div>
-        <button class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces()">CreateTrip</button>
+        @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces()" />*@
+        <button class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces();">Create Trip</button> @*CreateTrip*@
         <div id="path">
 
         </div>
@@ -165,53 +166,17 @@
             <p id="description"></p>
         </div>
     </div>
+    @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces()" />*@
 </form>
 
-<style>
-    #map, #map_canvas {
-        width: 1000px;
-        height: 500px;
-    }
-</style>
-
-<div id="map_canvas"></div>
-
-
-<div>
-
-    <script type="text/javascript">
-        var map;
-
-        function initialize() {
-            var myLatlng = new google.maps.LatLng(49.8382600, 24.0232400);
-
-            var myOptions = {
-                zoom: 12,
-                center: myLatlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-
-
-        }
-
-        google.maps.event.addDomListener(window, "load", initialize());
-    </script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initialize">
-    </script>
-</div>
-
-
 <script type="text/javascript">
-
     function changePlaceState(paramName) {
         //console.log(paramName.checked);
         if ((paramName.checked == true)) {
-
+            
             // ToDo show on GoogleMaps
             var chB = paramName;
+            
             //$("div").text(paramName.name + " checked!");
         } else {
 
@@ -223,31 +188,37 @@
 
 <script type="text/javascript">
     function getCheckedPlaces() {
-        var checkedB = document.querySelectorAll("input[type=checkbox]:checked"); // дай мені хвилинку
-        console.log(checkedB.checked);
-
-        @*var places = @Model;*@
-        //var places = new type();
-        var chB = '';
+        var checkedB = document.querySelectorAll("input[type=checkbox]:checked");
+        //console.log(checkedB.checked);
+       var chB = '';
 
        for (var i = 0; i < checkedB.length; i++) {
-           chB += checkedB[i].name
+           chB += checkedB[i].name;
            if (i < checkedB.length - 1) {
                chB += '*';
            }
-           
          }
-        var r = { ids : chB };
+        
+        var tripS = '';
+        tripS += sessionStorage.getItem('City').toString();
+        tripS += '|' + sessionStorage.getItem('StartDate').toString();
+        tripS += '|' + sessionStorage.getItem('StartTime').toString();
+        tripS += '|' + sessionStorage.getItem('FinishDate').toString();
+        tripS += '|' + sessionStorage.getItem('FinishTime').toString();;
+        tripS += '|' + sessionStorage.getItem('Budget').toString();
+        var t = { trip: tripS };
+        var r = { ids: chB, trip: tripS };
         Create(r);
+        
         //$("div").text(checkedB.length);
     }
     function Create(filters) {
-
+        
         $.ajax({
             url: '/Trips/CreateTrip',
                 type: 'POST',
                 cache: false,
-                async: true,
+                async: false,
                 dataType: "html",
                 data: filters
             })
@@ -258,12 +229,62 @@
             }).fail(function (xhr) {
                 console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
             });
-
     }
 
-
-
-
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("myTable2");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc"; 
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /* Loop through all table rows (except the
+            first, which contains table headers): */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /* Check if the two rows should switch place,
+                based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch
+                and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase this count by 1:
+                switchcount ++; 
+            } else {
+                /* If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
 </script>
 <script type="text/javascript">
     function CreatePath() {

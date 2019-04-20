@@ -24,9 +24,35 @@ namespace TGB.WebAPI.Controllers
         }
 
         // GET: Users
-        public ActionResult Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(_userManager.Users.ToList());
+            ViewData["UserNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "UserNameDesc" : "";
+            ViewData["EmailSortParm"] = sortOrder == "Email" ? "EmailDesc" : "Email";
+            ViewData["PhoneNumberSortParm"] = sortOrder == "PhoneNumber" ? "PhoneNumberDesc" : "PhoneNumber";
+            var users = from u in _userManager.Users
+                           select u;
+            switch (sortOrder)
+            {
+                case "UserNameDesc":
+                    users = users.OrderByDescending(u => u.UserName);
+                    break;
+                case "Email":
+                    users = users.OrderBy(u => u.Email);
+                    break;
+                case "EmailDesc":
+                    users = users.OrderByDescending(u => u.Email);
+                    break;
+                case "PhoneNumber":
+                    users = users.OrderBy(u => u.PhoneNumber);
+                    break;
+                case "PhoneNumberDesc":
+                    users = users.OrderByDescending(u => u.PhoneNumber);
+                    break;
+                default:
+                    users = users.OrderBy(s => s.UserName);
+                    break;
+            }
+            return View(await users.AsNoTracking().ToListAsync());
         }
 
         // GET: Users/Details/5
