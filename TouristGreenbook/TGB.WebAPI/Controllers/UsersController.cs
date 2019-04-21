@@ -26,16 +26,20 @@ namespace TGB.WebAPI.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index(string filter, int page = 1, string sortExpression = "UserName")
+        public async Task<IActionResult> Index(string filterEmail, string filterName, int page = 1, string sortExpression = "UserName")
         {
             var qry = _userManager.Users.AsNoTracking();
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(filterEmail))
             {
-                qry = qry.Where(p => p.Email.Contains(filter));
+                qry = qry.Where(p => p.Email.Contains(filterEmail));
+            }
+            if (!string.IsNullOrWhiteSpace(filterName))
+            {
+                qry = qry.Where(p => p.UserName.Contains(filterName));
             }
             var model = await PagingList.CreateAsync(qry, 5, page, sortExpression, "UserName");
             model.RouteValue = new RouteValueDictionary {
-                { "filter", filter}
+                { "filterEmail", filterEmail}, { "filterName", filterName}
             };
             return View(model);
         }
