@@ -18,37 +18,37 @@
                                 <th>
 
                                 </th>
-                                <th onclick="sortTable(1, table.id)">
+                                <th onclick="sortTable(1, 'table_@element.Key')">
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["NameSortParam"]">
                                         @Html.DisplayNameFor(model => model.Name)
                                     </a>*@
                                     @Html.DisplayNameFor(model => model.Name)
                                 </th>
-                                <th onclick="sortTable(2, table.id)">
+                                <th onclick="sortTable(2, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Type)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["TypeSortParam"]">
                                         @Html.DisplayNameFor(model => model.Type)
                                     </a>*@
                                 </th>
-                                <th onclick="sortTable(3, table.id)">
+                                <th onclick="sortTable(3, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Address)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["AddressSortParam"]">
                                         @Html.DisplayNameFor(model => model.Address)
                                     </a>*@
                                 </th>
-                                <th onclick="sortTable(4, table.id)">
+                                <th onclick="sortTable(4, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.WorkTimeStart)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeStartSortParam"]">
                                         @Html.DisplayNameFor(model => model.WorkTimeStart)
                                     </a>*@
                                 </th>
-                                <th onclick="sortTable(5, table.id)">
+                                <th onclick="sortTable(5, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.WorkTimeFinish)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeFinishSortParam"]">
                                         @Html.DisplayNameFor(model => model.WorkTimeFinish)
                                     </a>*@
                                 </th>
-                                <th onclick="sortTable(6, table.id)">
+                                <th onclick="sortTable(6, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Rating)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["RatingSortParam"]">
                                         @Html.DisplayNameFor(model => model.Rating)
@@ -262,8 +262,8 @@
             switching = false;
             rows = table.rows;
             /* Loop through all table rows (except the
-            first, which contains table headers): */
-            for (i = 1; i < (rows.length - 1); i++) {
+            first, which contains table headers and 2nd - name of group): */
+            for (i = 2; i < (rows.length - 1); i++) {
                 // Start by saying there should be no switching:
                 shouldSwitch = false;
                 /* Get the two elements you want to compare,
