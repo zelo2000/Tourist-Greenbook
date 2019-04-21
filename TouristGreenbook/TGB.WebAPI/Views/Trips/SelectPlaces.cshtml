@@ -186,7 +186,7 @@
     <script type="text/javascript">
         var map;
 
-        function initialize() {
+        function initMap() {
             var myLatlng = new google.maps.LatLng(49.8382600, 24.0232400);
 
             var myOptions = {
@@ -196,11 +196,28 @@
             };
             map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
+            var checkedPlaces = document.querySelectorAll("input[type=checkbox]:checked");
 
+            function setLocalStorageObjectItem(key, value) {
+                if (value === undefined) {
+                    localStorage.removeItem(key);
+                } else {
+                    localStorage.setItem(key, JSON.stringify(value));
+                }
+            }
+
+            
+
+            myStorage = window.localStorage;
+            localStorage.setItem()
+            for (var i = 0; i < checkedB.length; i++) {
+                setLocalStorageObjectItem(checkedPlaces[i].name, checkedPlaces[i]);
+                
+            }
 
         }
 
-        google.maps.event.addDomListener(window, "load", initialize());
+        google.maps.event.addDomListener(window, "load", initMap());
     </script>
 </div>
 
