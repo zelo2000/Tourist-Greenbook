@@ -184,7 +184,6 @@ namespace TGB.WebAPI.Controllers
             //        tmpTagedPlaces = tmpTagedPlaces.OrderBy(s => s.Name);//.ToList();
             //        break;
             //}
-
             
             //return View(await tmpTagedPlaces.AsNoTracking().ToListAsync());
         }
