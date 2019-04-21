@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 using TGB.WebAPI.Data;
 
 namespace TGB.WebAPI.Controllers
@@ -24,21 +26,18 @@ namespace TGB.WebAPI.Controllers
         }
 
         // GET: Role
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string filter, int page = 1, string sortExpression = "Name")
         {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
-            var roles = from r in _roleManager.Roles
-                        select r;
-            switch (sortOrder)
+            var qry = _roleManager.Roles.AsNoTracking();
+            if (!string.IsNullOrWhiteSpace(filter))
             {
-                case "NameDesc":
-                    roles = roles.OrderByDescending(r => r.Name);
-                    break;
-                default:
-                    roles = roles.OrderBy(r => r.Name);
-                    break;
+                qry = qry.Where(p => p.Name.Contains(filter));
             }
-            return View(await roles.AsNoTracking().ToListAsync());
+            var model = await PagingList.CreateAsync(qry, 2, page, sortExpression, "Name");
+            model.RouteValue = new RouteValueDictionary {
+                { "filter", filter}
+            };
+            return View(model);
         }
 
         // GET: Role/Details/5

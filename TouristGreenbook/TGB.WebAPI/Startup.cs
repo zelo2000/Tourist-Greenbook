@@ -12,11 +12,16 @@ using Microsoft.EntityFrameworkCore;
 using TGB.WebAPI.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using ReflectionIT.Mvc.Paging;
 
 namespace TGB.WebAPI
 {
     public class Startup
     {
+
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,6 +37,7 @@ namespace TGB.WebAPI
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                CultureInfo.CurrentCulture = new CultureInfo("en-US");
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -44,6 +50,8 @@ namespace TGB.WebAPI
                     .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddPaging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +83,8 @@ namespace TGB.WebAPI
 
             CreateRoles(serviceProvider).Wait();
         }
+
+        
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
@@ -131,5 +141,8 @@ namespace TGB.WebAPI
             }
             await _userManager.AddToRoleAsync(user2, "User");
         }
+
+
     }
+
 }

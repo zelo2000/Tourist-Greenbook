@@ -12,6 +12,16 @@
                 if (User.IsInRole("User"))
                 {
                     <li><a asp-area="" asp-controller="Trips" asp-action="Index">Your Trips</a></li>
+                    <li><a asp-area="" asp-controller="AddPlace" asp-action="AddingNewPlaceFromUser">Add Place</a></li>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                    </li>
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="AdminView" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                    </li>
                 }
             }
             <li><a asp-area="" asp-controller="AddPlace" asp-action="AddingNewPlaceFromUser">Add Place</a></li>

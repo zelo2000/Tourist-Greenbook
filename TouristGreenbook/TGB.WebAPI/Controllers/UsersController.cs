@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 using TGB.WebAPI.ViewModels;
 
 namespace TGB.WebAPI.Controllers
@@ -24,35 +26,18 @@ namespace TGB.WebAPI.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string filter, int page = 1, string sortExpression = "UserName")
         {
-            ViewData["UserNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "UserNameDesc" : "";
-            ViewData["EmailSortParm"] = sortOrder == "Email" ? "EmailDesc" : "Email";
-            ViewData["PhoneNumberSortParm"] = sortOrder == "PhoneNumber" ? "PhoneNumberDesc" : "PhoneNumber";
-            var users = from u in _userManager.Users
-                           select u;
-            switch (sortOrder)
+            var qry = _userManager.Users.AsNoTracking();
+            if (!string.IsNullOrWhiteSpace(filter))
             {
-                case "UserNameDesc":
-                    users = users.OrderByDescending(u => u.UserName);
-                    break;
-                case "Email":
-                    users = users.OrderBy(u => u.Email);
-                    break;
-                case "EmailDesc":
-                    users = users.OrderByDescending(u => u.Email);
-                    break;
-                case "PhoneNumber":
-                    users = users.OrderBy(u => u.PhoneNumber);
-                    break;
-                case "PhoneNumberDesc":
-                    users = users.OrderByDescending(u => u.PhoneNumber);
-                    break;
-                default:
-                    users = users.OrderBy(s => s.UserName);
-                    break;
+                qry = qry.Where(p => p.Email.Contains(filter));
             }
-            return View(await users.AsNoTracking().ToListAsync());
+            var model = await PagingList.CreateAsync(qry, 5, page, sortExpression, "UserName");
+            model.RouteValue = new RouteValueDictionary {
+                { "filter", filter}
+            };
+            return View(model);
         }
 
         // GET: Users/Details/5
