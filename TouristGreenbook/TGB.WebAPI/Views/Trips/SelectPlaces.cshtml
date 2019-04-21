@@ -13,46 +13,47 @@
                 foreach (var element in ViewBag.TagedPlace)
                 {
                     <table id="table_@element.Key" class="table table-striped table-hover table-condensed">
-                        <thead class="">
+                        <thead>
                             <tr>
                                 <th>
 
                                 </th>
                                 <th onclick="sortTable(1, 'table_@element.Key')">
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["NameSortParam"]">
-                                        @Html.DisplayNameFor(model => model.Name)
-                                    </a>*@
+                                            @Html.DisplayNameFor(model => model.Name)
+                                        </a>*@
                                     @Html.DisplayNameFor(model => model.Name)
                                 </th>
                                 <th onclick="sortTable(2, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Type)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["TypeSortParam"]">
-                                        @Html.DisplayNameFor(model => model.Type)
-                                    </a>*@
+                                            @Html.DisplayNameFor(model => model.Type)
+                                        </a>*@
                                 </th>
                                 <th onclick="sortTable(3, 'table_@element.Key')">
+                                    @**@
                                     @Html.DisplayNameFor(model => model.Address)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["AddressSortParam"]">
-                                        @Html.DisplayNameFor(model => model.Address)
-                                    </a>*@
+                                            @Html.DisplayNameFor(model => model.Address)
+                                        </a>*@
                                 </th>
                                 <th onclick="sortTable(4, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.WorkTimeStart)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeStartSortParam"]">
-                                        @Html.DisplayNameFor(model => model.WorkTimeStart)
-                                    </a>*@
+                                            @Html.DisplayNameFor(model => model.WorkTimeStart)
+                                        </a>*@
                                 </th>
                                 <th onclick="sortTable(5, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.WorkTimeFinish)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["WorkTimeFinishSortParam"]">
-                                        @Html.DisplayNameFor(model => model.WorkTimeFinish)
-                                    </a>*@
+                                            @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                                        </a>*@
                                 </th>
                                 <th onclick="sortTable(6, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Rating)
                                     @*<a asp-action="SelectPlaces" asp-route-sortOrder="@ViewData["RatingSortParam"]">
-                                        @Html.DisplayNameFor(model => model.Rating)
-                                    </a>*@
+                                            @Html.DisplayNameFor(model => model.Rating)
+                                        </a>*@
                                 </th>
                             </tr>
                         </thead>
@@ -191,10 +192,10 @@
     function changePlaceState(paramName) {
         //console.log(paramName.checked);
         if ((paramName.checked == true)) {
-            
+
             // ToDo show on GoogleMaps
             var chB = paramName;
-            
+
             //$("div").text(paramName.name + " checked!");
         } else {
 
@@ -208,15 +209,15 @@
     function getCheckedPlaces() {
         var checkedB = document.querySelectorAll("input[type=checkbox]:checked");
         //console.log(checkedB.checked);
-       var chB = '';
+        var chB = '';
 
-       for (var i = 0; i < checkedB.length; i++) {
-           chB += checkedB[i].name;
-           if (i < checkedB.length - 1) {
-               chB += '*';
-           }
-         }
-        
+        for (var i = 0; i < checkedB.length; i++) {
+            chB += checkedB[i].name;
+            if (i < checkedB.length - 1) {
+                chB += '*';
+            }
+        }
+
         var tripS = '';
         tripS += sessionStorage.getItem('City').toString();
         tripS += '|' + sessionStorage.getItem('StartDate').toString();
@@ -227,19 +228,19 @@
         var t = { trip: tripS };
         var r = { ids: chB, trip: tripS };
         Create(r);
-        
+
         //$("div").text(checkedB.length);
     }
     function Create(filters) {
-        
+
         $.ajax({
             url: '/Trips/CreateTrip',
-                type: 'POST',
-                cache: false,
-                async: false,
-                dataType: "html",
-                data: filters
-            })
+            type: 'POST',
+            cache: false,
+            async: false,
+            dataType: "html",
+            data: filters
+        })
             .done(function (result) {
                 alert('success');
                 $('body').html(result);
@@ -254,7 +255,7 @@
         table = document.getElementById(tableId);
         switching = true;
         // Set the sorting direction to ascending:
-        dir = "asc"; 
+        dir = "asc";
         /* Make a loop that will continue until
         no switching has been done: */
         while (switching) {
@@ -292,7 +293,7 @@
                 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
                 // Each time a switch is done, increase this count by 1:
-                switchcount ++; 
+                switchcount++;
             } else {
                 /* If no switching has been done AND the direction is "asc",
                 set the direction to "desc" and run the while loop again. */
