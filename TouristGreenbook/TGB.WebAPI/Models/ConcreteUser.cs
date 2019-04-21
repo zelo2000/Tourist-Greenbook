@@ -15,5 +15,10 @@ namespace TGB.WebAPI.Models
         /// List of user trips
         /// </summary>
         List<Trip> Trips { get; set; }
+
+        public ConcreteUser()
+        {
+            Trips = new List<Trip>();
+        }
     }
 }

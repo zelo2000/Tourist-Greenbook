@@ -4,7 +4,7 @@
 <form action="SelectPlaces" method="post">
     <label for="city">Місто, в яке ви подорожуєте*</label>
     <br />
-    <select name="city" required>
+    <select name="city" id="City" required>
         @{
             foreach (var city in @ViewBag.Cities)
             {
@@ -15,17 +15,17 @@
     <br />
     <label for="startDate">Дата та час приїзду в місто*</label>
     <br />
-    <input type="date" name="startDate" required />
-    <input type="time" name="startTime" />
+    <input type="date" name="startDate" id="StartDate" required />
+    <input type="time" name="startTime" id="StartTime" />
     <br />
     <label for="finishDate">Дата та час від'їзду з міста*</label>
     <br />
-    <input type="date" name="finishDate" required />
-    <input type="time" name="finishTime" />
+    <input type="date" name="finishDate" id="FinishDate" required />
+    <input type="time" name="finishTime" id="FinishTime" />
     <br />
     <label for="budget">Орієнтовний бюджет на 1 день*</label>
     <br />
-    <input type="number" name="budget" required />
+    <input type="number" name="budget" id="Budget" required />
     <br />
     <label for="tags">Типи закладів, які ви хочете відвідати*</label>
     <br />
@@ -41,66 +41,84 @@
     </select>
     <br />
     @*<label for="places">Заклади, які ви хочете відвідати*</label>
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" name="selectAll"/>
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkTimeStart)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Rating)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var place in Model)
+                 {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="@place.Id" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => place.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => place.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem=>place.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem=>place.WorkTimeStart)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem=>place.WorkTimeFinish)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem=>place.Rating)
+                    </td>
+                </tr>
+                 }
+            </tbody>
+
+        </table>*@
     <br />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    <input type="checkbox" name="selectAll"/>
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Type)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Address)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.WorkTimeStart)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.WorkTimeFinish)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Rating)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var place in Model)
-             {
-            <tr>
-                <td>
-                    <input type="checkbox" name="@place.Id" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => place.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => place.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>place.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>place.WorkTimeStart)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>place.WorkTimeFinish)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>place.Rating)
-                </td>
-            </tr>
-             }
-        </tbody>
-        
-    </table>*@
-    <br />
-    <input class="btn btn-light" type="submit" value="Submit" name="submit" />
+    <input class="btn btn-light" type="submit" value="Submit" name="submit" onclick="storeData()" /> @*onclick="return storeData()"*@
+    <span id="span_trip"></span>
 </form>
+
+<script>
+    function storeData() {
+        sessionStorage.setItem('City', '');
+        sessionStorage.setItem('StartDate', '');
+        sessionStorage.setItem('StartTime', '');
+        sessionStorage.setItem('FinishDate', '');
+        sessionStorage.setItem('FinishTime', '');
+        sessionStorage.setItem('Budget', '');
+        sessionStorage.setItem('City', document.getElementById("City").value);
+        sessionStorage.setItem('StartDate', document.getElementById("StartDate").value);
+        sessionStorage.setItem('StartTime', document.getElementById("StartTime").value);
+        sessionStorage.setItem('FinishDate', document.getElementById("FinishDate").value);
+        sessionStorage.setItem('FinishTime', document.getElementById("FinishTime").value);
+        sessionStorage.setItem('Budget', document.getElementById("Budget").value);
+    }
+</script>
 
 <div>
     <a asp-action="Index">Back to List</a>

@@ -24,9 +24,21 @@ namespace TGB.WebAPI.Controllers
         }
 
         // GET: Role
-        public ActionResult Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(_roleManager.Roles.ToList());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
+            var roles = from r in _roleManager.Roles
+                        select r;
+            switch (sortOrder)
+            {
+                case "NameDesc":
+                    roles = roles.OrderByDescending(r => r.Name);
+                    break;
+                default:
+                    roles = roles.OrderBy(r => r.Name);
+                    break;
+            }
+            return View(await roles.AsNoTracking().ToListAsync());
         }
 
         // GET: Role/Details/5

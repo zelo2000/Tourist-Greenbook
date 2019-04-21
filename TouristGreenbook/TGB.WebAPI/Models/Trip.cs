@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace TGB.WebAPI.Models
 {
     /// <summary>
-    /// Сlass to work with the trip
+    /// Class to work with the trip
     /// </summary>
     public class Trip
     {
@@ -32,5 +32,18 @@ namespace TGB.WebAPI.Models
         /// Money spent by the user on the trip
         /// </summary>
         public double Budget { get; set; }
+        /// <summary>
+        /// User who make trip
+        /// </summary>
+        public ConcreteUser ConcreteUser { get; set; }
+        /// <summary>
+        /// User id who make trip
+        /// </summary>
+        public string ConcreteUserId { get; set; }
+
+        public Trip()
+        {
+            ConcreteUser = new ConcreteUser();
+        }
     }
 }
