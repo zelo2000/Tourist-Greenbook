@@ -14,6 +14,9 @@
                     <li><a asp-area="" asp-controller="Trips" asp-action="Index">Your Trips</a></li>
                     <li><a asp-area="" asp-controller="AddPlace" asp-action="AddingNewPlaceFromUser">Add Place</a></li>
                     <li>
+                        <img src="https://bt-wpstatic.freetls.fastly.net/wp-content/blogs.dir/2550/files/2018/06/smiles.jpg" alt="Example" width="100" height="50">
+                    </li>
+                    <li>
                         <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
                     </li>
                 }
@@ -24,13 +27,7 @@
                     </li>
                 }
             }
-            <li><a asp-area="" asp-controller="AddPlace" asp-action="AddingNewPlaceFromUser">Add Place</a></li>
-            <li>
-                <img src="https://bt-wpstatic.freetls.fastly.net/wp-content/blogs.dir/2550/files/2018/06/smiles.jpg" alt="Example" width="100" height="50">
-            </li>
-            <li>
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-            </li>
+            
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
             </li>
