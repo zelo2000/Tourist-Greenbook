@@ -9,10 +9,16 @@
 <h2>Place</h2>
 
 <form method="get" class="form-inline">
-    <input name="filter" class="form-control" placeholder="filter"
+    <input name="filterName" class="form-control" placeholder="name"
+           value="@Model.RouteValue["Filter"]" />
+    <input name="filterType" class="form-control" placeholder="type"
+           value="@Model.RouteValue["Filter"]" />
+    <input name="filterCity" class="form-control" placeholder="city"
+           value="@Model.RouteValue["Filter"]" />
+    <input name="filterAddress" class="form-control" placeholder="address"
            value="@Model.RouteValue["Filter"]" />
     <button type="submit" class="btn btn-info">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search by Name
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
     </button>
 </form>
 

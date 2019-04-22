@@ -24,17 +24,29 @@ namespace TGB.WebAPI.Controllers.Admin
         }
 
         // GET: AdminPlaces
-        public async Task<IActionResult> Index(string filter, int page = 1, string sortExpression = "Name")
+        public async Task<IActionResult> Index(string filterName, string filterType, string filterAddress, string filterCity, int page = 1, string sortExpression = "Name")
         {
             var qry = _context.Places;
             var applicationDbContext = qry.Include(t => t.Trip).AsNoTracking();
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(filterName))
             {
-                applicationDbContext = applicationDbContext.Where(p => p.Name.Contains(filter));
+                applicationDbContext = applicationDbContext.Where(p => p.Name.Contains(filterName));
+            }
+            if (!string.IsNullOrWhiteSpace(filterType))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.Type.Contains(filterType));
+            }
+            if (!string.IsNullOrWhiteSpace(filterCity))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.City.Contains(filterCity));
+            }
+            if (!string.IsNullOrWhiteSpace(filterAddress))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.Address.Contains(filterAddress));
             }
             var model = await PagingList.CreateAsync(applicationDbContext, 3, page, sortExpression, "Name");
             model.RouteValue = new RouteValueDictionary {
-                { "filter", filter}
+                { "filterName", filterName}, { "filterType", filterType}, { "filterCity", filterCity}, { "filterAddress", filterAddress}
             };
             return View(model);
         }

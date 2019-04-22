@@ -9,10 +9,12 @@
 <h2>Users</h2>
 
 <form method="get" class="form-inline">
-    <input name="filter" class="form-control" placeholder="filter"
+    <input name="filterName" class="form-control" placeholder="username"
+           value="@Model.RouteValue["Filter"]" />
+    <input name="filterEmail" class="form-control" placeholder="email"
            value="@Model.RouteValue["Filter"]" />
     <button type="submit" class="btn btn-info">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search by Email
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
     </button>
 </form>
 
