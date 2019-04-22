@@ -18,22 +18,22 @@
                                 <th>
 
                                 </th>
-                                <th onclick="sortTable(1)">
+                                <th onclick="sortTable(1, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Name)
                                 </th>
-                                <th onclick="sortTable(2)">
+                                <th onclick="sortTable(2, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Type)
                                 </th>
-                                <th onclick="sortTable(3)">
+                                <th onclick="sortTable(3, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Address)
                                 </th>
-                                <th onclick="sortTable(4)">
+                                <th onclick="sortTable(4, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.WorkTimeStart)
                                 </th>
-                                <th onclick="sortTable(5)">
+                                <th onclick="sortTable(5, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.WorkTimeFinish)
                                 </th>
-                                <th onclick="sortTable(6)">
+                                <th onclick="sortTable(6, 'table_@element.Key')">
                                     @Html.DisplayNameFor(model => model.Rating)
                                 </th>
                             </tr>
@@ -231,9 +231,9 @@
             });
     }
 
-    function sortTable(n) {
+    function sortTable(n, tableId) {
         var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        table = document.getElementById("myTable2");
+        table = document.getElementById(tableId);
         switching = true;
         // Set the sorting direction to ascending:
         dir = "asc"; 

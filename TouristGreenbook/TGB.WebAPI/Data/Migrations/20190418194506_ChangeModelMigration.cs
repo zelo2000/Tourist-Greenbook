@@ -8,13 +8,13 @@ namespace TGB.WebAPI.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "YourTrips");
+            //migrationBuilder.DropTable(
+            //    name: "YourTrips");
 
-            migrationBuilder.AddColumn<string>(
-                name: "ConcreteUserId",
-                table: "Trips",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "ConcreteUserId",
+            //    table: "Trips",
+            //    nullable: true);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
@@ -44,18 +44,18 @@ namespace TGB.WebAPI.Data.Migrations
                 oldClrType: typeof(string),
                 oldMaxLength: 128);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Trips_ConcreteUserId",
-                table: "Trips",
-                column: "ConcreteUserId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Trips_ConcreteUserId",
+            //    table: "Trips",
+            //    column: "ConcreteUserId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Trips_AspNetUsers_ConcreteUserId",
-                table: "Trips",
-                column: "ConcreteUserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_Trips_AspNetUsers_ConcreteUserId",
+            //    table: "Trips",
+            //    column: "ConcreteUserId",
+            //    principalTable: "AspNetUsers",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

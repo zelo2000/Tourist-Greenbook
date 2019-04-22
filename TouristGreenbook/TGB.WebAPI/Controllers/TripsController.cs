@@ -155,11 +155,6 @@ namespace TGB.WebAPI.Controllers
             //return View(tagedPlaces);
         }
 
-        //public void AddChecked(string[] ids)
-        //{
-            
-        //}
-
         [HttpPost]
         public IActionResult CreateTrip(string ids, string trip)
         {
@@ -230,18 +225,27 @@ namespace TGB.WebAPI.Controllers
                 return NotFound();
             }
 
-            var trips = await _context.Trips.FindAsync(id);
-            if (trips == null)
+            var concreteTrip = await _context.Trips.FindAsync(id);
+            if (concreteTrip == null)
             {
                 return NotFound();
             }
-            var trp = new TripWithPlaces()
+            var trip = new TripWithPlaces()
             {
-                Trips = new List<Trip>(){trips},
-                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trips.Id).ToListAsync(),
+                Trips = new List<Trip>(){concreteTrip},
+                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == concreteTrip.Id).ToListAsync(),
+                AvailablePlaces = await _context.Places
+                    .Where(pl => (pl.Trip == null && pl.State == PlaceState.Сonfirmed)
+                                  || (pl.Trip.Id != concreteTrip.Id && pl.State == PlaceState.Сonfirmed)).ToListAsync(),
             };
+            ViewBag.CurPlaces="";
+            ViewBag.NewPlaces = "";
+            return View(trip);
+        }
 
-            return View(trp); //trips
+        public async Task<IActionResult> ShowAvailablePlaces(IEnumerable<Place> availablePlaces)
+        {
+            return PartialView("~/Views/Trips/_ShowAvailablePlaces.cshtml", availablePlaces);
         }
 
         // POST: Trips/Edit/5
@@ -249,25 +253,95 @@ namespace TGB.WebAPI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
+        public async Task<IActionResult> Edit(int id, string curPlaces, string newPlaces, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
         {
             if (id != trip.Id)
             {
                 return NotFound();
             }
+            List<Place> finishedPlaces = new List<Place>();
+            if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
+            {
+                string[] tempPlaces;
+                if (!String.IsNullOrEmpty(curPlaces))
+                {
+                    tempPlaces = curPlaces.TrimEnd('*').Split('*');
+                    int[] curIds = new int[tempPlaces.Length];
+                    for (var i = 0; i < curIds.Length; i++)
+                    {
+                        curIds[i] = int.Parse(tempPlaces[i]);
+                    }
+
+                    List<Place> tmpPlaces= _context.Places.Where(pl => pl.TripId == id).ToList();
+                    var tempCount = tmpPlaces.Count();
+                    if (curIds.Length < tempCount)
+                    {
+                        for (var i = 0; i < tempPlaces.GetLength(0); i++)
+                        {
+                            curIds[i] = int.Parse(tempPlaces[i]);
+                        }
+                        var oldPlaces = _context.Places.Where(pl => pl.TripId == id);
+                        foreach (var curId in curIds)
+                        {
+                            finishedPlaces.Add(_context.Places.FirstOrDefault(pl => pl.Id == curId));
+                        }
+
+                        var exceptPlaces = oldPlaces.Except(finishedPlaces);
+                        foreach (var exceptPlace in exceptPlaces)
+                        {
+                            _context.Places.Find(exceptPlace).TripId = null;
+                        }
+                    }
+                    else
+                    {
+                        finishedPlaces=(tmpPlaces);
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(newPlaces))
+                {
+                    tempPlaces = newPlaces.TrimEnd('|').Split('|');
+                    int[] newIds = new int[tempPlaces.Length];
+                    for (var i = 0; i < newIds.Length; i++)
+                    {
+                        newIds[i] = int.Parse(tempPlaces[i]);
+                    }
+                    for (var i = 0; i < tempPlaces.GetLength(0); i++)
+                    {
+                        newIds[i] = int.Parse(tempPlaces[i]);
+                    }
+                    foreach (var newId in newIds)
+                    {
+                        finishedPlaces.Add(_context.Places.FirstOrDefault(pl => pl.Id == newId));
+                    }
+                }
+            }
+            
+
             var trp = new TripWithPlaces()
             {
                 Trips = new List<Trip>() { trip },
-                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync(),
-            }; ;
+                
+            };
+            if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
+            {
+                trp.Places = (finishedPlaces);
+            }
+            else
+            {
+                trp.Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync();
+            }
             if (ModelState.IsValid)
             {
                 
                 try
                 {
-                    //trp.Places = ; //Bind Places 
-                    
+                    //trip.Places=trp.Places; //Bind Places 
                     _context.Update(trip);
+                    //trip.Places = trp.Places; //Bind Places 
+                    //_context.Trips.Find(trip.Id).Places=trp.Places;
+                    await _context.SaveChangesAsync();
+                    _context.Trips.Find(trip.Id).Places = trp.Places;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
