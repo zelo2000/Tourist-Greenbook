@@ -2,163 +2,182 @@
     ViewData["Title"] = "Adding of a new place";
 }
 
+<table>
+    <tr>
+        <td>
+            <div>
+                <h2>Add a new place</h2>
+                <form method="post" action="/AddPlace/AddingPlaceToDataBase">
+                    <table>
+                        <tr>
+                            <td><p>Name</p></td>
+                            <td><input type="text" name="Name" class="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><p>Type</p></td>
+                            <td><input type="text" name="Type" class="text"/></td>
 
-<div>
-    <h2>Add a new place</h2>
-    <form method="post" action="/AddPlace/AddingPlaceToDataBase">
-        <table>
-            <tr>
-                <td><p>Name</p></td>
-                <td><input type="text" name="Name" /></td>
-            </tr>
-            <tr>
-                <td><p>Type</p></td>
-                <td><input type="text" name="Type" /></td>
-                
-            </tr>
-            <tr>
-                <td><p>City</p></td>
-                <td><input type="text" name="City" /></td>
-            </tr>
-            <tr>
-                <td><p>Address</p></td>
-                <td><input type="text" id="address" name="Address" /></td>
-            </tr>
-            <tr>
-                <td><p>Opens at</p></td>
-                <td><input type="time" name="WorkTimeStart" /></td>
-            </tr>
-            <tr>
-                <td><p>Closes at</p></td>
-                <td><input type="time" name="WorkTimeFinish" /></td>
-            </tr>
-            <tr>
-            <tr>
-                <td><p>Coordinates</p></td>
-                <td><input type="text" id="lat2" name="Coordinates" /></td>
-            </tr>
-            <tr>
-                <td><p>Latitude</p></td>
-                <td><input type="text" id="lat" name="Latitude" /></td>
-            </tr>
-            <tr>
-                <td><p>Longtitude</p></td>
-                <td><input type="text" id="long" name="Longtitude" /></td>
-            </tr>
-            <tr>
-                <td><p>Description</p></td>
-                <td><input type="text" id="long2" name="Description" /></td>
-            </tr>
-            <tr>
-                <td><p>Rating</p></td>
-                <td><input type="text" name="Rating" /></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Submit" /></td>
-            </tr>
-            <tr>
+                        </tr>
+                        <tr>
+                            <td><p>City</p></td>
+                            <td><input type="text" name="City" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><p>Address</p></td>
+                            <td><input type="text" id="address" name="Address" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><p>Opens at</p></td>
+                            <td><input type="time" name="WorkTimeStart" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><p>Closes at</p></td>
+                            <td><input type="time" name="WorkTimeFinish" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><p>Latitude</p></td>
+                            <td><input type="text" id="lat" name="Latitude" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><p>Longtitude</p></td>
+                            <td><input type="text" id="long" name="Longtitude" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><p>Description</p></td>
+                            <td><input type="text" id="long2" name="Description" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><p>Rating</p></td>
+                            <td><input type="text" name="Rating" class="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><input type="submit" value="Submit" class="text"/></td>
+                        </tr>
+                        <tr>
 
-                <td><input type="hidden" name="PlaceState" value="Processed" /></td>
-            </tr>
-        </table>
-    </form>
+                            <td><input type="hidden" name="PlaceState" value="Processed" /></td>
+                        </tr>
+                    </table>
+                </form>
 
-</div>
+            </div>
+        </td>
+        <td>
+            <style>
+                .midColumn{width: 30px}
+                .text {
+                    border-radius: 5px 5px 5px 5px; 
+                }
+            </style>
+            <div class="midColumn" ></div>
+        </td>
+        <td>
+            <br />
+            <br />
+            <div>
+                <style>
+                    #map, #map_canvas {
+                        width: 1000px;
+                        height: 500px;
+                    }
+                </style>
 
-<style>
-    #map, #map_canvas {
-        width: 1000px;
-        height: 500px;
-    }
-</style>
+                <div id="map_canvas"></div>
 
-<div id="map_canvas" ></div>
+                <script type="text/javascript">
+                    var map;
 
-    <script type="text/javascript">
-        var map;
 
-        function initMap() {
-            var myLatlng = new google.maps.LatLng(49.8382600, 24.0232400);
+                    function initMap() {
+                        var myLatlng = new google.maps.LatLng(49.8382600, 24.0232400);
 
-            var myOptions = {
-                zoom: 15,
-                center: myLatlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
+                        var myOptions = {
+                            zoom: 15,
+                            center: myLatlng,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        };
 
-            map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-            var geocoder = new google.maps.Geocoder();
-            var infowindow = new google.maps.InfoWindow();
+                        var geocoder = new google.maps.Geocoder();
+                        var infowindow = new google.maps.InfoWindow();
 
-            var marker = new google.maps.Marker({
-                visible: false,
-                draggable: true,
-                position: myLatlng,
-                map: map,
-                title: "Your location"
-            });
-
-            function geocodeAddress(geocoder, resultsMap) {
-                var address = document.getElementById('address').value;
-                geocoder.geocode({ 'address': address }, function (results, status) {
-                    if (status === 'OK') {
-                        resultsMap.setCenter(results[0].geometry.location);
                         var marker = new google.maps.Marker({
-                            map: resultsMap,
-                            position: results[0].geometry.location
+                            visible: false,
+                            draggable: true,
+                            position: myLatlng,
+                            map: map,
+                            title: "Your location"
                         });
-                    } else {
-                        alert('Geocode was not successful for the following reason: ' + status);
-                    }
-                });
-            }
 
-            google.maps.event.addListener(marker, 'drag', function (event) {
-
-                document.getElementById("lat").value = event.latLng.lat();
-                document.getElementById("long").value = event.latLng.lng();
-                
-            });
-            google.maps.event.addListener(marker, 'dragend', function (event) {
-
-                document.getElementById("lat").value = event.latLng.lat();
-                document.getElementById("long").value = event.latLng.lng();
-
-                geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        if (results[0]) {
-                            $('#address').val(results[0].formatted_address);
-                            document.getElementById("address").value = results[0].formatted_address;
-                            infowindow.setContent(results[0].formatted_address);
-                            infowindow.open(map, marker);
+                        function geocodeAddress(geocoder, resultsMap) {
+                            var address = document.getElementById('address').value;
+                            geocoder.geocode({ 'address': address }, function (results, status) {
+                                if (status === 'OK') {
+                                    resultsMap.setCenter(results[0].geometry.location);
+                                    var marker = new google.maps.Marker({
+                                        map: resultsMap,
+                                        position: results[0].geometry.location
+                                    });
+                                } else {
+                                    alert('Geocode was not successful for the following reason: ' + status);
+                                }
+                            });
                         }
+
+                        google.maps.event.addListener(marker, 'drag', function (event) {
+
+                            document.getElementById("lat").value = event.latLng.lat();
+                            document.getElementById("long").value = event.latLng.lng();
+
+                        });
+                        google.maps.event.addListener(marker, 'dragend', function (event) {
+
+                            document.getElementById("lat").value = event.latLng.lat();
+                            document.getElementById("long").value = event.latLng.lng();
+
+                            geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    if (results[0]) {
+                                        $('#address').val(results[0].formatted_address);
+                                        document.getElementById("address").value = results[0].formatted_address;
+                                        infowindow.setContent(results[0].formatted_address);
+                                        infowindow.open(map, marker);
+                                    }
+                                }
+                            });
+                        });
+
+                        google.maps.event.addListener(map, 'click', function (event) {
+
+                            document.getElementById("lat").value = event.latLng.lat();
+                            document.getElementById("long").value = event.latLng.lng();
+
+                            geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    if (results[0]) {
+                                        $('#address').val(results[0].formatted_address);
+                                        document.getElementById("address").value = results[0].formatted_address;
+                                        infowindow.setContent(results[0].formatted_address);
+                                        infowindow.open(map, marker);
+                                    }
+                                }
+                            });
+                            marker.setPosition(event.latLng);
+                            marker.visible = true;
+                        });
                     }
-                });
-            });
+                </script>
 
-            google.maps.event.addListener(map, 'click', function (event) {
+                <script async defer
+                        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
+                </script>
 
-                document.getElementById("lat").value = event.latLng.lat();
-                document.getElementById("long").value = event.latLng.lng();
+            </div>
+        </td>
+    </tr>
+</table>
 
-                geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        if (results[0]) {
-                            $('#address').val(results[0].formatted_address);
-                            document.getElementById("address").value = results[0].formatted_address;
-                            infowindow.setContent(results[0].formatted_address);
-                            infowindow.open(map, marker);
-                        }
-                    }
-                });
-                marker.setPosition(event.latLng);
-                marker.visible = true;
-            });
-        }
-    </script>
 
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
-    </script>
+
 
