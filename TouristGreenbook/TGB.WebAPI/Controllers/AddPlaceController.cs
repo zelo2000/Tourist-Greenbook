@@ -45,7 +45,9 @@ namespace TGB.WebAPI.Controllers
                 WorkTimeStart = workTimeStart,
                 WorkTimeFinish = workTimeFinish,
                 Coordinates = newPoint,
-                Description = description
+                Description = description,
+                Latitude = latitude,
+                Longtitude = longtitude
             };
             _context.Places.Add(newPlace);
             _context.Points.Add(newPoint);

@@ -203,11 +203,6 @@
 
 <div id="map_canvas"></div>
 
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
-</script>
-
-
 
 <style>
     #map_canvas img {
@@ -227,25 +222,15 @@
 <br />
 
 <script>
-    var myModel = [];
 
-    @foreach (var place in Model)
-    {
-    @:myModel.push({
-    @:ID: '@place.Id',
-    @:Name: '@place.Name',
-    @:Lat:  '@ViewBag.X[place.Id]'),
-    @:Long: '@place.Coordinates.Y'),
-    @:});
-    }
 
 
     var data = [
-            { "Id": 1, "Name": "Kryyivka", "Lat": "49.841303735401844", "Long": "24.032249450683594" },
-            { "Id": 2, "Name": "Opernyi teatr ", "Lat": "49.84404362156558", "Long": "24.026198387145996" },
-            { "Id": 3, "Name": "Vysokyi zamok", "Lat": "49.848222340822105", "Long": "24.03933048248291" },
-            { "Id": 4, "Name": "Universytet Franka", "Lat": "49.8406118203997", "Long": "24.022507667541504" }
-        ];
+        { "Id": 1, "Name": "Kryyivka", "Lat": "49.841303735401844", "Long": "24.032249450683594" },
+        { "Id": 2, "Name": "Opernyi teatr ", "Lat": "49.84404362156558", "Long": "24.026198387145996" },
+        { "Id": 3, "Name": "Vysokyi zamok", "Lat": "49.848222340822105", "Long": "24.03933048248291" },
+        { "Id": 4, "Name": "Universytet Franka", "Lat": "49.8406118203997", "Long": "24.022507667541504" }
+    ];
 
 </script>
 
@@ -260,16 +245,26 @@
     @:});
     }*@
 
-    $(document).ready(function () {
-        initMap();
-    });
+    //$(document).ready(function () {
+    //    initMap();
+    //});
 
-    function convertCoordsToDouble(LatOrLong) {
-        
-        LatOrLong = LatOrLong.replace(',', '.');
+    //function convertCoordsToDouble(LatOrLong) {
+
+    //    LatOrLong = LatOrLong.replace(',', '.');
+    //}
+
+        var myModel = [];
+
+    @foreach (var place in Model)
+    {
+    @:myModel.push({
+    @:ID: '@place.Id',
+    @:Name: '@place.Name',
+    @:Lat:  '@place.Latitude'),
+    @:Long: '@place.Longtitude'),
+    @:});
     }
-
-
 
     function initMap() {
 
@@ -281,40 +276,19 @@
             center: Lviv,
             mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP
         };
-    myModel.ID
+     //myModel.ID
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
         var marker = new google.maps.Marker({
-            'position': new google.maps.LatLng(document.getElementById("lat2").value, document.getElementById("long2").value),
+            'position': new google.maps.LatLng(49.8382600, 24.0232400),
             'map': map,
             'title': 1
         });
-        
 
-        //$.each(data, function (i, item) {
-        //    var marker = new google.maps.Marker({
-        //        'position': new google.maps.LatLng(item.Description),
-        //        'map': map,
-        //        'title': item.Name
-        //    });
 
-        //    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
-
-        //    var infowindow = new google.maps.InfoWindow({
-        //        content: "<div class='infoDiv'><h2>" + item.Name + "</div></div>"
-        //    });
-
-        //    google.maps.event.addListener(marker, 'click', function () {
-        //        infowindow.open(map, marker);
-        //    });
-
-        //})
-    }
-
-    function workWithMarker(item) {
-         /*function (i, item)*/ {
+        $.each(myModel, function (i, item) {
             var marker = new google.maps.Marker({
-                'position': new google.maps.LatLng(item.Description),
+                'position': new google.maps.LatLng(item.Lat, item.Long),
                 'map': map,
                 'title': item.Name
             });
@@ -329,13 +303,18 @@
                 infowindow.open(map, marker);
             });
 
-        }
+        })
     }
+
+   
 
 </script>
 
 
 
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
+</script>
 
 
 

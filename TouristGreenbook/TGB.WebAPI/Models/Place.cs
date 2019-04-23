@@ -54,12 +54,20 @@ namespace TGB.WebAPI.Models
         /// </summary>
         public double Rating { get; set; }
         /// <summary>
-        /// A trip to which is related current place
+        /// The trip that the current place is related to
         /// </summary>
         public Trip Trip { get; set; }
         /// <summary>
         /// Place's trip id 
         /// </summary>
         public int? TripId { get; set; }
+        /// <summary>
+        /// Latitude of a place 
+        /// </summary>
+        public double Latitude { get; set; }
+        /// <summary>
+        /// Longtitude of a place
+        /// </summary>
+        public double Longtitude { get; set; }
     }
 }
