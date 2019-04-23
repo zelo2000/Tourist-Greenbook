@@ -5,6 +5,12 @@
 
 <h2>Your places</h2>
 
+
+
+
+<div>
+    <input type="hidden" name="Coordinates" id="coord" value="">
+</div>
 <style>
     #map, #map_canvas {
         width: 500px;
@@ -48,11 +54,13 @@
         <script type="text/javascript">
 
 
-                $(document).ready(function () {
-                    Initialize();
-                });
+            $(document).ready(function () {
+                initMap();
+            });
 
-            function Initialize() {
+
+
+            function initMap() {
 
                 google.maps.visualRefresh = true;
                 var Lviv = new google.maps.LatLng(49.8382600, 24.0232400);
@@ -95,4 +103,4 @@
 
         </script>
     </section>
-} 
+}
