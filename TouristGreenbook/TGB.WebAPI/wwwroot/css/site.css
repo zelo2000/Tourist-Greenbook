@@ -29,6 +29,17 @@ body {
     margin: 15px;
 }
 
+.footer {
+    position: fixed;
+    padding: 12px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
 #final_stage {
     align-items: center;
     justify-content: center;

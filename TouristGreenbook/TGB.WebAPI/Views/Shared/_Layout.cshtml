@@ -41,37 +41,20 @@
 
     <div class="container body-content">
         @RenderBody()
-        
-        
-        @*<footer>
-            <p>&copy; 2019 - TGB.WebAPI</p>
-        </footer>*@
+
+        <br />
+        <br />
+        <footer class="footer">
+            <p>
+                &copy; 2019 - TGB.WebAPI
+                <a href="#">Contact us</a>
+                <a>|</a>
+                <a href="#">Our team</a>
+            </p>
+        </footer>
     </div>
     
-    <style>
-        .footer {
-            position: fixed;
-            /*left: 0;*/
-            bottom: 0;
-            width: 100%;
-            background-color: black; /*red;*/
-            color: white;
-            text-align: center;
-        }
-    </style>
-    <div class="footer text-center">
-        @*<hr />*@
-        <div class="row">
-            <div class="col-sm-12">
-                <ul class="nav nav-pills nav-stacked">
-                    <a href="#">Contact us</a>
-                    <a>|</a>
-                    <a href="#">Our team</a>
-                </ul>
-            </div>
-        </div>
-        <p>&copy; 2019 - TGB.WebAPI</p>
-    </div>
+    
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
