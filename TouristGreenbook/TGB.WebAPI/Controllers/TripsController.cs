@@ -230,7 +230,9 @@ namespace TGB.WebAPI.Controllers
 
             _context.Trips.Add(_newTrip);
             _context.SaveChanges();
-            return View();
+
+            return RedirectToAction(nameof(Index));
+            //return View();
         }
 
 
@@ -301,10 +303,13 @@ namespace TGB.WebAPI.Controllers
                 return NotFound();
             }
 
+            var concreteUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(concreteUserId);
             trip.City = currentTrip[1];
             trip.StayTimeStart = Convert.ToDateTime(currentTrip[2]);
             trip.StayTimeFinish = Convert.ToDateTime(currentTrip[3]);
             trip.Budget = Convert.ToDouble(currentTrip[4]);
+            trip.ConcreteUser = user;
 
             List<Place> finishedPlaces = new List<Place>();
             if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
@@ -378,18 +383,18 @@ namespace TGB.WebAPI.Controllers
             {
                 trp.Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync();
             }
+            trip.Places = trp.Places;
             if (ModelState.IsValid)
             {
 
                 try
                 {
                     //Bind Places 
-                    //_context.Update(trip);
-                    _context.Trips.Find(trip.Id).Places = trp.Places;
-                    await _context.SaveChangesAsync();
                     _context.Update(trip);
-                    //_context.Trips.Find(trip.Id).Places = trp.Places;
+                    _context.Trips.Find(trip.Id).Places = trp.Places;
+                    _context.UpdateRange(trip.Places);
                     await _context.SaveChangesAsync();
+                    trp.Places = _context.Trips.FindAsync(trip.Id).Result.Places;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -415,14 +420,14 @@ namespace TGB.WebAPI.Controllers
                 return NotFound();
             }
 
-            var trips = await _context.Trips
+            var trip = await _context.Trips
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (trips == null)
+            if (trip == null)
             {
                 return NotFound();
             }
 
-            return View(trips);
+            return View(trip);
         }
 
         // POST: Trips/Delete/5
@@ -430,8 +435,10 @@ namespace TGB.WebAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var trips = await _context.Trips.FindAsync(id);
-            _context.Trips.Remove(trips);
+            var trip = await _context.Trips.FindAsync(id);
+            trip.Places.Clear();
+            _context.Trips.Update(trip);
+            _context.Trips.Remove(trip);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
