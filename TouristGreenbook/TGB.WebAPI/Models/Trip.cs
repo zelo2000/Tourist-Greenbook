@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace TGB.WebAPI.Models
 {
@@ -35,7 +36,7 @@ namespace TGB.WebAPI.Models
         /// <summary>
         /// User who make trip
         /// </summary>
-        public ConcreteUser ConcreteUser { get; set; }
+        public IdentityUser ConcreteUser { get; set; }
         /// <summary>
         /// User id who make trip
         /// </summary>
@@ -43,7 +44,7 @@ namespace TGB.WebAPI.Models
 
         public Trip()
         {
-            ConcreteUser = new ConcreteUser();
+            
         }
     }
 }

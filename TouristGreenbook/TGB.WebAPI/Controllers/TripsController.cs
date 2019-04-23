@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,10 +16,12 @@ namespace TGB.WebAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private Trip _newTrip;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public TripsController(ApplicationDbContext context)
+        public TripsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Trips
@@ -28,7 +31,9 @@ namespace TGB.WebAPI.Controllers
             
             TripWithPlaces trips = new TripWithPlaces()
             {
-                Trips = await _context.Trips.ToListAsync(),
+                Trips = await _context.Trips
+                    .Where(t=>t.ConcreteUserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    .ToListAsync(),
                 Places = await _context.Places.ToListAsync(),                
             };
             
@@ -156,7 +161,7 @@ namespace TGB.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTrip(string ids, string trip)
+        public async Task<IActionResult> CreateTrip(string ids, string trip)
         {
             string [] places =ids.Split('*');
             int[] idsInt = new int[places.GetLength(0)];
@@ -170,12 +175,8 @@ namespace TGB.WebAPI.Controllers
             string tmpDate2 = tripProps[3] + " " + tripProps[4];
             DateTime DT1 = Convert.ToDateTime(tmpDate1);
             DateTime DT2 = Convert.ToDateTime(tmpDate2);
-            //for (var i = 0; i < tripProps.GetLength(0); i++)
-            //{
-            //    idsInt[i] = int.Parse(places[i]);
-            //}
-
-
+            
+            var concreteUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             _newTrip = new Trip()
             {
                 City = tripProps[0],
@@ -183,10 +184,9 @@ namespace TGB.WebAPI.Controllers
                 StayTimeFinish = DT2,
                 Budget = Convert.ToDouble(tripProps[5]),
                 Places = new List<Place>(),
-                ConcreteUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value
+                ConcreteUser = await _userManager.FindByIdAsync(concreteUserId),
             };
 
-            //_newTrip = (Trip) TempData["_newTrip"];
             foreach (var id in idsInt)
             {
                 //_newTrip.Places.Add(_context.Places.FirstOrDefault(pl=>pl.Id==id));
@@ -238,8 +238,7 @@ namespace TGB.WebAPI.Controllers
                     .Where(pl => (pl.Trip == null && pl.State == PlaceState.Сonfirmed)
                                   || (pl.Trip.Id != concreteTrip.Id && pl.State == PlaceState.Сonfirmed)).ToListAsync(),
             };
-            ViewBag.CurPlaces="";
-            ViewBag.NewPlaces = "";
+            
             return View(trip);
         }
 
@@ -253,12 +252,25 @@ namespace TGB.WebAPI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string curPlaces, string newPlaces, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] TripWithPlaces trip)
+        public async Task<IActionResult> Edit(int id, string curPlaces, string newPlaces, string curTrip,
+            [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
         {
-            if (id != trip.Trips.Find(t=>t.Id==id).Id)
+            if (String.IsNullOrEmpty(curTrip))
             {
                 return NotFound();
             }
+            var currentTrip= curTrip.Split('|');
+            trip.Id = Int32.Parse(currentTrip[0]);
+            if (id != trip.Id)
+            {
+                return NotFound();
+            }
+
+            trip.City = currentTrip[1];
+            trip.StayTimeStart = Convert.ToDateTime(currentTrip[2]);
+            trip.StayTimeFinish = Convert.ToDateTime(currentTrip[3]);
+            trip.Budget = Convert.ToDouble(currentTrip[4]);
+
             List<Place> finishedPlaces = new List<Place>();
             if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
             {
@@ -316,48 +328,45 @@ namespace TGB.WebAPI.Controllers
                     }
                 }
             }
-            
 
-            //var trp = new TripWithPlaces()
-            //{
-            //    Trips = new List<Trip>() { trip },
-                
-            //};
-            //if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
-            //{
-            //    trp.Places = (finishedPlaces);
-            //}
-            //else
-            //{
-            //    trp.Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync();
-            //}
-            //if (ModelState.IsValid)
-            //{
-                
-            //    try
-            //    {
-            //        //trip.Places=trp.Places; //Bind Places 
-            //        _context.Update(trip);
-            //        //trip.Places = trp.Places; //Bind Places 
-            //        //_context.Trips.Find(trip.Id).Places=trp.Places;
-            //        await _context.SaveChangesAsync();
-            //        _context.Trips.Find(trip.Id).Places = trp.Places;
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!TripsExists(trip.Id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            return View(trip); //trip  trp
+
+            var trp = new TripWithPlaces()
+            {
+                Trips = new List<Trip>() { trip },
+
+            };
+            if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
+            {
+                trp.Places = (finishedPlaces);
+            }
+            else
+            {
+                trp.Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync();
+            }
+            if (ModelState.IsValid)
+            {
+
+                try
+                {
+                    //Bind Places 
+                    _context.Trips.Find(trip.Id).Places = trp.Places;
+                    _context.Update(trip);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TripsExists(trip.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(trp); //trip  trp
         }
 
         // GET: Trips/Delete/5

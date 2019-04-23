@@ -21,29 +21,30 @@
         {
             @*<form asp-action="Edit">*@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="@Model.Trips[0].Id"/>
-                <input type="text" ID="curPlaces" name="curPlaces" style="display: ruby-text;"/> @*runat="server"*@
-                <input type="text" ID="newPlaces" name="newPlaces" style="display: ruby-text;"/> @*runat="server"*@
+                <input id="newId" style="display: none;" asp-for="@Model.Trips[0].Id"/>
+                <input type="text" ID="curPlaces" name="curPlaces" style="display: none;"/> @*runat="server"*@
+                <input type="text" ID="newPlaces" name="newPlaces" style="display: none;"/> @*runat="server"*@
+                <input type="text" ID="curTrip" name="curTrip" style="display: none;"/>
                 @*<input id="curPlaces" style="display:none;" />
                 <input id="newPlaces" style="display:none;" />*@
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].City" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].City" class="form-control"/>
+                    <input id="newCity" asp-for="@Model.Trips[0].City" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].City" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].StayTimeStart" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].StayTimeStart" class="form-control"/>
+                    <input id="newStayTimeStart" asp-for="@Model.Trips[0].StayTimeStart" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].StayTimeStart" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].StayTimeFinish" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].StayTimeFinish" class="form-control"/>
+                    <input id="newStayTimeFinish" asp-for="@Model.Trips[0].StayTimeFinish" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].StayTimeFinish" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].Budget" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].Budget" class="form-control"/>
+                    <input id="newBudget" asp-for="@Model.Trips[0].Budget" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].Budget" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -233,21 +234,6 @@
 </div>
 
 
-@*var places = [];
-@foreach (var place in Model.Places)
-{
-    @:places.push({
-    @:ID: '@place.Id',
-    @:});
-}
-var availablePlaces = [];
-@foreach (var place in Model.AvailablePlaces)
-{
-    @:availablePlaces.push({
-    @:ID: '@place.Id',
-    @:});
-}*@
-
 <script>
     function sortTable(n, tableName) {
         var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -304,10 +290,12 @@ var availablePlaces = [];
         }
     }
 
-    function showAvailablePlaces() {
-        @*@Html.Partial("_ShowAvailablePlaces", Model.AvailablePlaces);*@
+    @*@Html.Partial("_ShowAvailablePlaces", Model.AvailablePlaces);*@
 
-        @*$("#availablePlaces").load('@Url.Action("ShowAvailablePlaces", "Trips", @Model.AvailablePlaces)');*@
+    @*$("#availablePlaces").load('@Url.Action("ShowAvailablePlaces", "Trips", @Model.AvailablePlaces)');*@
+
+    function showAvailablePlaces() {
+
         divTable = document.getElementById('availablePlaces');
 
         if (divTable.style.display == "none") {
@@ -339,6 +327,9 @@ var availablePlaces = [];
         //console.log(checkedB.checked);
         var curCheckedPlaces = '';
         var newCheckedPlaces = '';
+        var newCurTrip = document.getElementById('newId').value + '|' + document.getElementById('newCity').value
+            + '|' + document.getElementById('newStayTimeStart').value + '|' + document.getElementById('newStayTimeFinish').value
+            + '|' + document.getElementById('newBudget').value;
 
         var places = [];
         @foreach (var place in Model.Places)
@@ -349,13 +340,10 @@ var availablePlaces = [];
         @foreach (var place in Model.AvailablePlaces)
         {
             @:availablePlaces.push('@place.Id');
-            @*@:availablePlaces.push({
-            @:ID: '@place.Id'
-            @:});*@
         }
 
         for (var i = 0; i < checkedPlaces.length; i++) {
-            // getting deleted places
+            
             if (places.includes(checkedPlaces[i].name)) {
                 curCheckedPlaces += checkedPlaces[i].name;
                 if (i < checkedPlaces.length - 1) {
@@ -370,17 +358,11 @@ var availablePlaces = [];
             }
         }
         document.getElementById('curPlaces').value = curCheckedPlaces;
-        console.log(document.getElementById('curPlaces').value);
-
         document.getElementById('newPlaces').value = newCheckedPlaces;
-        @*@ViewBag["CurPlaces"] = curCheckedPlaces;
-        @ViewBag["NewPlaces"] = newCheckedPlaces;*@
+        document.getElementById('curTrip').value = newCurTrip;
 
-        @*@curPlaces = curCheckedPlaces;
-        @newPlaces = newCheckedPlaces;*@
-        var r = { curPlaces: curCheckedPlaces, newPlaces: newCheckedPlaces };
+        var r = { curPlaces: curCheckedPlaces, newPlaces: newCheckedPlaces, curTrip: newCurTrip };
         Create(r);
-
         //$("div").text(checkedB.length);
     }
 
