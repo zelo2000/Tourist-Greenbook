@@ -22,7 +22,7 @@
             </tr>
             <tr>
                 <td><p>Address</p></td>
-                <td><input type="text" name="Address" /></td>
+                <td><input type="text" id="address" name="Address" /></td>
             </tr>
             <tr>
                 <td><p>Opens at</p></td>
@@ -35,7 +35,7 @@
             <tr>
             <tr>
                 <td><p>Coordinates</p></td>
-                <td><input type="text" id="coord" name="Coordinates" /></td>
+                <td><input type="text" id="lat2" name="Coordinates" /></td>
             </tr>
             <tr>
                 <td><p>Latitude</p></td>
@@ -47,7 +47,7 @@
             </tr>
             <tr>
                 <td><p>Description</p></td>
-                <td><input type="text" name="Description" /></td>
+                <td><input type="text" id="long2" name="Description" /></td>
             </tr>
             <tr>
                 <td><p>Rating</p></td>
@@ -85,33 +85,75 @@
                 center: myLatlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
+
             map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
+            var geocoder = new google.maps.Geocoder();
+            var infowindow = new google.maps.InfoWindow();
+
             var marker = new google.maps.Marker({
+                visible: false,
                 draggable: true,
                 position: myLatlng,
                 map: map,
                 title: "Your location"
             });
 
+            function geocodeAddress(geocoder, resultsMap) {
+                var address = document.getElementById('address').value;
+                geocoder.geocode({ 'address': address }, function (results, status) {
+                    if (status === 'OK') {
+                        resultsMap.setCenter(results[0].geometry.location);
+                        var marker = new google.maps.Marker({
+                            map: resultsMap,
+                            position: results[0].geometry.location
+                        });
+                    } else {
+                        alert('Geocode was not successful for the following reason: ' + status);
+                    }
+                });
+            }
+
             google.maps.event.addListener(marker, 'drag', function (event) {
 
                 document.getElementById("lat").value = event.latLng.lat();
                 document.getElementById("long").value = event.latLng.lng();
-                document.getElementById("coord").value = event.latLng;
+                
             });
             google.maps.event.addListener(marker, 'dragend', function (event) {
 
                 document.getElementById("lat").value = event.latLng.lat();
                 document.getElementById("long").value = event.latLng.lng();
-                document.getElementById("coord").value = event.latLng;
+
+                geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#address').val(results[0].formatted_address);
+                            document.getElementById("address").value = results[0].formatted_address;
+                            infowindow.setContent(results[0].formatted_address);
+                            infowindow.open(map, marker);
+                        }
+                    }
+                });
             });
+
             google.maps.event.addListener(map, 'click', function (event) {
+
                 document.getElementById("lat").value = event.latLng.lat();
                 document.getElementById("long").value = event.latLng.lng();
-                document.getElementById("coord").value = event.latLng;
-                marker.setPosition(event.latLng);
 
+                geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#address').val(results[0].formatted_address);
+                            document.getElementById("address").value = results[0].formatted_address;
+                            infowindow.setContent(results[0].formatted_address);
+                            infowindow.open(map, marker);
+                        }
+                    }
+                });
+                marker.setPosition(event.latLng);
+                marker.visible = true;
             });
         }
     </script>
