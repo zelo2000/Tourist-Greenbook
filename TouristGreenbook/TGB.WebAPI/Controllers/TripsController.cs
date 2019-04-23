@@ -253,9 +253,9 @@ namespace TGB.WebAPI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string curPlaces, string newPlaces, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
+        public async Task<IActionResult> Edit(int id, string curPlaces, string newPlaces, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] TripWithPlaces trip)
         {
-            if (id != trip.Id)
+            if (id != trip.Trips.Find(t=>t.Id==id).Id)
             {
                 return NotFound();
             }
@@ -318,46 +318,46 @@ namespace TGB.WebAPI.Controllers
             }
             
 
-            var trp = new TripWithPlaces()
-            {
-                Trips = new List<Trip>() { trip },
+            //var trp = new TripWithPlaces()
+            //{
+            //    Trips = new List<Trip>() { trip },
                 
-            };
-            if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
-            {
-                trp.Places = (finishedPlaces);
-            }
-            else
-            {
-                trp.Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync();
-            }
-            if (ModelState.IsValid)
-            {
+            //};
+            //if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
+            //{
+            //    trp.Places = (finishedPlaces);
+            //}
+            //else
+            //{
+            //    trp.Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync();
+            //}
+            //if (ModelState.IsValid)
+            //{
                 
-                try
-                {
-                    //trip.Places=trp.Places; //Bind Places 
-                    _context.Update(trip);
-                    //trip.Places = trp.Places; //Bind Places 
-                    //_context.Trips.Find(trip.Id).Places=trp.Places;
-                    await _context.SaveChangesAsync();
-                    _context.Trips.Find(trip.Id).Places = trp.Places;
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TripsExists(trip.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(trp); //trip
+            //    try
+            //    {
+            //        //trip.Places=trp.Places; //Bind Places 
+            //        _context.Update(trip);
+            //        //trip.Places = trp.Places; //Bind Places 
+            //        //_context.Trips.Find(trip.Id).Places=trp.Places;
+            //        await _context.SaveChangesAsync();
+            //        _context.Trips.Find(trip.Id).Places = trp.Places;
+            //        await _context.SaveChangesAsync();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!TripsExists(trip.Id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    return RedirectToAction(nameof(Index));
+            //}
+            return View(trip); //trip  trp
         }
 
         // GET: Trips/Delete/5
