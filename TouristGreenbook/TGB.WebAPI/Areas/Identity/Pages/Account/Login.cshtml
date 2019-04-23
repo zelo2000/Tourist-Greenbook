@@ -11,7 +11,7 @@
         <section>
             <form method="post">
                 <h4>Use a local account to log in.</h4>
-                <hr />
+                <br />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Input.Email"></label>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="form-group">
                     <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-default">Register as a new user</a>
                     </p>
                 </div>
             </form>
