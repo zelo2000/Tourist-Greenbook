@@ -1,0 +1,83 @@
+﻿@*@model IEnumerable<Place>*@
+<input type="button" value="qw" onclick="alert('sd')"/>
+
+@*<div id="availablePlaces">
+    <h4>Available places</h4>
+    <table id="table_availablePlaces" class="table table-striped table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>
+
+                </th>
+                <th onclick="sortTable(1, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th onclick="sortTable(2, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th onclick="sortTable(3, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.Type)
+                </th>
+                <th onclick="sortTable(4, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.WorkTimeStart)
+                </th>
+                <th onclick="sortTable(5, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.WorkTimeFinish)
+                </th>
+                <th onclick="sortTable(6, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.Rating)
+                </th>
+                <th onclick="sortTable(7, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var place in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Rating)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Description)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-default" onclick="getCheckedPlaces()" />
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>*@
+
+
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@

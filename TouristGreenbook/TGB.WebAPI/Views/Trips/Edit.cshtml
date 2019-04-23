@@ -2,37 +2,49 @@
 @model TGB.WebAPI.Models.TripWithPlaces
 @*TGB.WebAPI.Models.Trip*@
 
-    @{
-        ViewData["Title"] = "Edit";
-    }
+@{
+    ViewData["Title"] = "Edit";
+}
+@{
+    string curPlaces="";
+    string newPlaces="";
+}
 
-    <h2>Edit</h2>
 
-    <h4>Trip</h4>
-    <hr />
-    <div class="row">
-        <div class="col-sm-3">
-            <form asp-action="Edit">
+<h2>Edit</h2>
+
+<h4>Trip</h4>
+<hr />
+<div class="row">
+    <div class="col-sm-3">
+        @using (Html.BeginForm("Edit", "Trips", FormMethod.Post, new {onsubmit = "return getCheckedPlaces()"}))
+        {
+            @*<form asp-action="Edit">*@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="@Model.Trips[0].Id" />
+                <input id="newId" style="display: none;" asp-for="@Model.Trips[0].Id"/>
+                <input type="text" ID="curPlaces" name="curPlaces" style="display: none;"/> @*runat="server"*@
+                <input type="text" ID="newPlaces" name="newPlaces" style="display: none;"/> @*runat="server"*@
+                <input type="text" ID="curTrip" name="curTrip" style="display: none;"/>
+                @*<input id="curPlaces" style="display:none;" />
+                <input id="newPlaces" style="display:none;" />*@
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].City" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].City" class="form-control" />
+                    <input id="newCity" asp-for="@Model.Trips[0].City" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].City" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].StayTimeStart" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].StayTimeStart" class="form-control" />
+                    <input id="newStayTimeStart" asp-for="@Model.Trips[0].StayTimeStart" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].StayTimeStart" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].StayTimeFinish" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].StayTimeFinish" class="form-control" />
+                    <input id="newStayTimeFinish" asp-for="@Model.Trips[0].StayTimeFinish" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].StayTimeFinish" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="@Model.Trips[0].Budget" class="control-label"></label>
-                    <input asp-for="@Model.Trips[0].Budget" class="form-control" />
+                    <input id="newBudget" asp-for="@Model.Trips[0].Budget" class="form-control"/>
                     <span asp-validation-for="@Model.Trips[0].Budget" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -49,152 +61,334 @@
                     @*<span asp-validation-for="Places" class="text-danger"></span>*@
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    @*<input type="submit" value="Save" class="btn btn-default" onclick="getCheckedPlaces" />*@
+                    <button class="btn btn-default" type="submit" value="Save" name="submit" onsubmit="getCheckedPlaces();">Save</button>
                 </div>
-            </form>
-        </div>
-        <div class="col-sm-9">
-            <table id="table_places" class="table table-striped table-hover table-condensed">
-                <thead>
-                <tr>
-                    <th>
+            @*</form>*@
+        }
+    </div>
+    <div class="col-sm-9">
+        <h2>Google maps here</h2>
 
-                    </th>
-                    <th onclick="sortTable(0)">
-                        @Html.DisplayNameFor(model => model.Places[0].Name)
-                    </th>
-                    <th onclick="sortTable(1)">
-                        @Html.DisplayNameFor(model => model.Places[0].Address)
-                    </th>
-                    <th onclick="sortTable(2)">
-                        @Html.DisplayNameFor(model => model.Places[0].Type)
-                    </th>
-                    <th onclick="sortTable(3)">
-                        @Html.DisplayNameFor(model => model.Places[0].WorkTimeStart)
-                    </th>
-                    <th onclick="sortTable(4)">
-                        @Html.DisplayNameFor(model => model.Places[0].WorkTimeFinish)
-                    </th>
-                    <th onclick="sortTable(5)">
-                        @Html.DisplayNameFor(model => model.Places[0].Rating)
-                    </th>
-                    <th onclick="sortTable(6)">
-                        @Html.DisplayNameFor(model => model.Places[0].Description)
-                    </th>
-                    
-                </tr>
-                </thead>
-                <tbody>
-                @{
-                    var places = Model.Places.Where(pl => pl.Trip != null && pl.Trip.Id == Model.Trips[0].Id).ToList();
-                    foreach (var place in places)
-                    {
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)" />
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => place.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => place.Address)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => place.Type)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => place.WorkTimeStart)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => place.WorkTimeFinish)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => place.Rating)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => place.Description)
-                            </td>
-                        </tr>
-                    
-                    
-                    @*<p>@place.Name, @place.Address, @place.Type</p>*@
-                    }
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<div>
+    <button id="addPlaces" onclick="showAvailablePlaces()">Show/Hide list of available places</button>
+</div>
+
+<div class="currentPlaces">
+    <h4>Current places</h4>
+    <table id="table_places" class="table table-striped table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>
+
+                </th>
+                <th onclick="sortTable(1, 'table_places')">
+                    @Html.DisplayNameFor(model => model.Places[0].Name)
+                </th>
+                <th onclick="sortTable(2, 'table_places')">
+                    @Html.DisplayNameFor(model => model.Places[0].Address)
+                </th>
+                <th onclick="sortTable(3, 'table_places')">
+                    @Html.DisplayNameFor(model => model.Places[0].Type)
+                </th>
+                <th onclick="sortTable(4, 'table_places')">
+                    @Html.DisplayNameFor(model => model.Places[0].WorkTimeStart)
+                </th>
+                <th onclick="sortTable(5, 'table_places')">
+                    @Html.DisplayNameFor(model => model.Places[0].WorkTimeFinish)
+                </th>
+                <th onclick="sortTable(6, 'table_places')">
+                    @Html.DisplayNameFor(model => model.Places[0].Rating)
+                </th>
+                <th onclick="sortTable(7, 'table_places')">
+                    @Html.DisplayNameFor(model => model.Places[0].Description)
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var places = Model.Places.Where(pl => pl.Trip != null && pl.Trip.Id == Model.Trips[0].Id).ToList();
+                foreach (var place in places)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="@place.Id" checked="checked" onclick="changePlaceState(this)" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Rating)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Description)
+                        </td>
+                    </tr>
                 }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <table class="table table-striped table-hover table-condensed">
-            <thead>
-
-            </thead>
-        </table>
-    </div>
-
+            }
+        </tbody>
+    </table>
 
     <div>
         <a asp-action="Index">Back to List</a>
     </div>
 
-    <script>
-        function sortTable(n) {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("table_places");
-            switching = true;
-            // Set the sorting direction to ascending:
-            dir = "asc";
-            /* Make a loop that will continue until
-            no switching has been done: */
-            while (switching) {
-                // Start by saying: no switching is done:
-                switching = false;
-                rows = table.rows;
-                /* Loop through all table rows (except the
-                first, which contains table headers): */
-                for (i = 1; i < (rows.length - 1); i++) {
-                    // Start by saying there should be no switching:
-                    shouldSwitch = false;
-                    /* Get the two elements you want to compare,
-                    one from current row and one from the next: */
-                    x = rows[i].getElementsByTagName("TD")[n];
-                    y = rows[i + 1].getElementsByTagName("TD")[n];
-                    /* Check if the two rows should switch place,
-                    based on the direction, asc or desc: */
-                    if (dir == "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            // If so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir == "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            // If so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-default" onsubmit="getCheckedPlaces()" />
+    </div>
+</div>
+
+<div id="availablePlaces" style="display: none;">
+    <h4>Available places</h4>
+    <table id="table_availablePlaces" class="table table-striped table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>
+
+                </th>
+                <th onclick="sortTable(1, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.AvailablePlaces[0].Name)
+                </th>
+                <th onclick="sortTable(2, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.AvailablePlaces[0].Address)
+                </th>
+                <th onclick="sortTable(3, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.AvailablePlaces[0].Type)
+                </th>
+                <th onclick="sortTable(4, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.AvailablePlaces[0].WorkTimeStart)
+                </th>
+                <th onclick="sortTable(5, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.AvailablePlaces[0].WorkTimeFinish)
+                </th>
+                <th onclick="sortTable(6, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.AvailablePlaces[0].Rating)
+                </th>
+                <th onclick="sortTable(7, 'table_availablePlaces')">
+                    @Html.DisplayNameFor(model => model.AvailablePlaces[0].Description)
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var place in Model.AvailablePlaces)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.WorkTimeStart)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.WorkTimeFinish)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Rating)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => place.Description)
+                        </td>
+                    </tr>
                 }
-                if (shouldSwitch) {
-                    /* If a switch has been marked, make the switch
-                    and mark that a switch has been done: */
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    // Each time a switch is done, increase this count by 1:
-                    switchcount++;
-                } else {
-                    /* If no switching has been done AND the direction is "asc",
-                    set the direction to "desc" and run the while loop again. */
-                    if (switchcount == 0 && dir == "asc") {
-                        dir = "desc";
-                        switching = true;
+            }
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-default" onsubmit="getCheckedPlaces()" />
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+
+<script>
+    function sortTable(n, tableName) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById(tableName); //"table_places"
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /* Loop through all table rows (except the
+            first, which contains table headers): */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /* Check if the two rows should switch place,
+                based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
                     }
                 }
             }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch
+                and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase this count by 1:
+                switchcount++;
+            } else {
+                /* If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
         }
-    </script>
+    }
+
+    @*@Html.Partial("_ShowAvailablePlaces", Model.AvailablePlaces);*@
+
+    @*$("#availablePlaces").load('@Url.Action("ShowAvailablePlaces", "Trips", @Model.AvailablePlaces)');*@
+
+    function showAvailablePlaces() {
+
+        divTable = document.getElementById('availablePlaces');
+
+        if (divTable.style.display == "none") {
+            divTable.style.display = "";
+            href = "#availablePlaces";
+        } else {
+            divTable.style.display = "none";
+            href = "#currentPlaces";
+        }
+    }
+
+    function changePlaceState(paramName) {
+        //console.log(paramName.checked);
+        if ((paramName.checked == true)) {
+
+            // ToDo show on GoogleMaps
+            var chB = paramName;
+
+            //$("div").text(paramName.name + " checked!");
+        } else {
+
+            // ToDo get out from google maps
+            var chB = paramName;
+        }
+    }
+
+    function getCheckedPlaces() {
+        var checkedPlaces = document.querySelectorAll("input[type=checkbox]:checked");
+        //console.log(checkedB.checked);
+        var curCheckedPlaces = '';
+        var newCheckedPlaces = '';
+        var newCurTrip = document.getElementById('newId').value + '|' + document.getElementById('newCity').value
+            + '|' + document.getElementById('newStayTimeStart').value + '|' + document.getElementById('newStayTimeFinish').value
+            + '|' + document.getElementById('newBudget').value;
+
+        var places = [];
+        @foreach (var place in Model.Places)
+        {
+            @:places.push('@place.Id');
+        }
+        var availablePlaces = [];
+        @foreach (var place in Model.AvailablePlaces)
+        {
+            @:availablePlaces.push('@place.Id');
+        }
+
+        for (var i = 0; i < checkedPlaces.length; i++) {
+            
+            if (places.includes(checkedPlaces[i].name)) {
+                curCheckedPlaces += checkedPlaces[i].name;
+                if (i < checkedPlaces.length - 1) {
+                    curCheckedPlaces += '*';
+                }
+            }
+            else {
+                newCheckedPlaces += checkedPlaces[i].name;
+                if (i < checkedPlaces.length - 1) {
+                    newCheckedPlaces += '|';
+                }
+            }
+        }
+        document.getElementById('curPlaces').value = curCheckedPlaces;
+        document.getElementById('newPlaces').value = newCheckedPlaces;
+        document.getElementById('curTrip').value = newCurTrip;
+
+        var r = { curPlaces: curCheckedPlaces, newPlaces: newCheckedPlaces, curTrip: newCurTrip };
+        Create(r);
+        //$("div").text(checkedB.length);
+    }
+
+    function Create(filters) {
+
+        $.ajax({
+                url: '/Trips/Edit',
+                type: 'POST',
+                cache: false,
+                async: true,
+                //contentType: "application/json; charset=utf-8",
+                //dataType: "json",
+                dataType: "html",
+                data: filters
+            })
+            .done(function (result) {
+                alert('success');
+                $('body').html(result);
+
+            }).fail(function (xhr) {
+                console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
+            });
+    }
+</script>
 
 
 @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

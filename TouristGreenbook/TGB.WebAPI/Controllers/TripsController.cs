@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Extensions.Internal;
@@ -16,10 +17,12 @@ namespace TGB.WebAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private Trip _newTrip;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public TripsController(ApplicationDbContext context)
+        public TripsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Trips
@@ -29,7 +32,9 @@ namespace TGB.WebAPI.Controllers
             
             TripWithPlaces trips = new TripWithPlaces()
             {
-                Trips = await _context.Trips.ToListAsync(),
+                Trips = await _context.Trips
+                    .Where(t=>t.ConcreteUserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    .ToListAsync(),
                 Places = await _context.Places.ToListAsync(),                
             };
             
@@ -142,6 +147,7 @@ namespace TGB.WebAPI.Controllers
             ViewBag.TagedPlace = tagedPlace;
             
             return View(tagedPlaces);
+
             //var tmpTagedPlaces1 = from pl in tagedPlaces
             //                        select pl;
             //var tmpTagedPlaces = tmpTagedPlaces1.AsQueryable();
@@ -187,11 +193,9 @@ namespace TGB.WebAPI.Controllers
             
             //return View(await tmpTagedPlaces.AsNoTracking().ToListAsync());
         }
-    
 
-        
         [HttpPost]
-        public IActionResult CreateTrip(string ids, string trip)
+        public async Task<IActionResult> CreateTrip(string ids, string trip)
         {
             string [] places =ids.Split('*');
             int[] idsInt = new int[places.GetLength(0)];
@@ -205,12 +209,8 @@ namespace TGB.WebAPI.Controllers
             string tmpDate2 = tripProps[3] + " " + tripProps[4];
             DateTime DT1 = Convert.ToDateTime(tmpDate1);
             DateTime DT2 = Convert.ToDateTime(tmpDate2);
-            //for (var i = 0; i < tripProps.GetLength(0); i++)
-            //{
-            //    idsInt[i] = int.Parse(places[i]);
-            //}
-
-
+            
+            var concreteUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             _newTrip = new Trip()
             {
                 City = tripProps[0],
@@ -218,10 +218,9 @@ namespace TGB.WebAPI.Controllers
                 StayTimeFinish = DT2,
                 Budget = Convert.ToDouble(tripProps[5]),
                 Places = new List<Place>(),
-                ConcreteUserId =  User.FindFirst(ClaimTypes.NameIdentifier).Value
+                ConcreteUser = await _userManager.FindByIdAsync(concreteUserId),
             };
 
-            //_newTrip = (Trip) TempData["_newTrip"];
             foreach (var id in idsInt)
             {
                 //_newTrip.Places.Add(_context.Places.FirstOrDefault(pl=>pl.Id==id));
@@ -260,18 +259,26 @@ namespace TGB.WebAPI.Controllers
                 return NotFound();
             }
 
-            var trips = await _context.Trips.FindAsync(id);
-            if (trips == null)
+            var concreteTrip = await _context.Trips.FindAsync(id);
+            if (concreteTrip == null)
             {
                 return NotFound();
             }
-            var trp = new TripWithPlaces()
+            var trip = new TripWithPlaces()
             {
-                Trips = new List<Trip>(){trips},
-                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trips.Id).ToListAsync(),
+                Trips = new List<Trip>(){concreteTrip},
+                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == concreteTrip.Id).ToListAsync(),
+                AvailablePlaces = await _context.Places
+                    .Where(pl => (pl.Trip == null && pl.State == PlaceState.Сonfirmed)
+                                  || (pl.Trip.Id != concreteTrip.Id && pl.State == PlaceState.Сonfirmed)).ToListAsync(),
             };
+            
+            return View(trip);
+        }
 
-            return View(trp); //trips
+        public async Task<IActionResult> ShowAvailablePlaces(IEnumerable<Place> availablePlaces)
+        {
+            return PartialView("~/Views/Trips/_ShowAvailablePlaces.cshtml", availablePlaces);
         }
 
         // POST: Trips/Edit/5
@@ -279,24 +286,104 @@ namespace TGB.WebAPI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
+        public async Task<IActionResult> Edit(int id, string curPlaces, string newPlaces, string curTrip,
+            [Bind("Id,City,StayTimeStart,StayTimeFinish,Budget")] Trip trip)
         {
+            if (String.IsNullOrEmpty(curTrip))
+            {
+                return NotFound();
+            }
+            var currentTrip= curTrip.Split('|');
+            trip.Id = Int32.Parse(currentTrip[0]);
             if (id != trip.Id)
             {
                 return NotFound();
             }
+
+            trip.City = currentTrip[1];
+            trip.StayTimeStart = Convert.ToDateTime(currentTrip[2]);
+            trip.StayTimeFinish = Convert.ToDateTime(currentTrip[3]);
+            trip.Budget = Convert.ToDouble(currentTrip[4]);
+
+            List<Place> finishedPlaces = new List<Place>();
+            if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
+            {
+                string[] tempPlaces;
+                if (!String.IsNullOrEmpty(curPlaces))
+                {
+                    tempPlaces = curPlaces.TrimEnd('*').Split('*');
+                    int[] curIds = new int[tempPlaces.Length];
+                    for (var i = 0; i < curIds.Length; i++)
+                    {
+                        curIds[i] = int.Parse(tempPlaces[i]);
+                    }
+
+                    List<Place> tmpPlaces= _context.Places.Where(pl => pl.TripId == id).ToList();
+                    var tempCount = tmpPlaces.Count();
+                    if (curIds.Length < tempCount)
+                    {
+                        for (var i = 0; i < tempPlaces.GetLength(0); i++)
+                        {
+                            curIds[i] = int.Parse(tempPlaces[i]);
+                        }
+                        var oldPlaces = _context.Places.Where(pl => pl.TripId == id);
+                        foreach (var curId in curIds)
+                        {
+                            finishedPlaces.Add(_context.Places.FirstOrDefault(pl => pl.Id == curId));
+                        }
+
+                        var exceptPlaces = oldPlaces.Except(finishedPlaces);
+                        foreach (var exceptPlace in exceptPlaces)
+                        {
+                            _context.Places.Find(exceptPlace).TripId = null;
+                        }
+                    }
+                    else
+                    {
+                        finishedPlaces=(tmpPlaces);
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(newPlaces))
+                {
+                    tempPlaces = newPlaces.TrimEnd('|').Split('|');
+                    int[] newIds = new int[tempPlaces.Length];
+                    for (var i = 0; i < newIds.Length; i++)
+                    {
+                        newIds[i] = int.Parse(tempPlaces[i]);
+                    }
+                    for (var i = 0; i < tempPlaces.GetLength(0); i++)
+                    {
+                        newIds[i] = int.Parse(tempPlaces[i]);
+                    }
+                    foreach (var newId in newIds)
+                    {
+                        finishedPlaces.Add(_context.Places.FirstOrDefault(pl => pl.Id == newId));
+                    }
+                }
+            }
+
+
             var trp = new TripWithPlaces()
             {
                 Trips = new List<Trip>() { trip },
-                Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync(),
-            }; ;
+
+            };
+            if (!String.IsNullOrEmpty(curPlaces) || !String.IsNullOrEmpty(newPlaces))
+            {
+                trp.Places = (finishedPlaces);
+            }
+            else
+            {
+                trp.Places = await _context.Places.Where(pl => pl.Trip != null && pl.Trip.Id == trip.Id).ToListAsync();
+            }
             if (ModelState.IsValid)
             {
-                
+
                 try
                 {
-                    //trp.Places = ; //Bind Places 
-                    
+                    //Bind Places 
+                    _context.Trips.Find(trip.Id).Places = trp.Places;
                     _context.Update(trip);
                     await _context.SaveChangesAsync();
                 }
@@ -313,7 +400,7 @@ namespace TGB.WebAPI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(trp); //trip
+            return View(trp); //trip  trp
         }
 
         // GET: Trips/Delete/5
