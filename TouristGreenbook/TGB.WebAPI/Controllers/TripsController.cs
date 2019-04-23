@@ -211,6 +211,7 @@ namespace TGB.WebAPI.Controllers
             DateTime DT2 = Convert.ToDateTime(tmpDate2);
             
             var concreteUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(concreteUserId);
             _newTrip = new Trip()
             {
                 City = tripProps[0],
@@ -218,7 +219,7 @@ namespace TGB.WebAPI.Controllers
                 StayTimeFinish = DT2,
                 Budget = Convert.ToDouble(tripProps[5]),
                 Places = new List<Place>(),
-                ConcreteUser = await _userManager.FindByIdAsync(concreteUserId),
+                ConcreteUser = user,
             };
 
             foreach (var id in idsInt)
@@ -335,7 +336,7 @@ namespace TGB.WebAPI.Controllers
                         var exceptPlaces = oldPlaces.Except(finishedPlaces);
                         foreach (var exceptPlace in exceptPlaces)
                         {
-                            _context.Places.Find(exceptPlace).TripId = null;
+                            _context.Places.Find(exceptPlace.Id).TripId = null;
                         }
                     }
                     else
@@ -383,8 +384,11 @@ namespace TGB.WebAPI.Controllers
                 try
                 {
                     //Bind Places 
+                    //_context.Update(trip);
                     _context.Trips.Find(trip.Id).Places = trp.Places;
+                    await _context.SaveChangesAsync();
                     _context.Update(trip);
+                    //_context.Trips.Find(trip.Id).Places = trp.Places;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
