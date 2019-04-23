@@ -150,6 +150,7 @@ namespace TGB.WebAPI.Controllers
             //    //ViewBag.X[6019]=_context.Places.FirstOrDefault(pl=>pl.Id==6019).Coordinates.X;
             //    ViewBag.X[tagedPlaces[i].Id] = _context.Points.First(p => p.Id == tagedPlaces[i].Coordinates.Id);// tagedPlaces[i].Coordinates.X;
             //}
+
             return View(tagedPlaces);
 
             //var tmpTagedPlaces1 = from pl in tagedPlaces
