@@ -36,9 +36,7 @@
                                 <th onclick="sortTable(6)">
                                     @Html.DisplayNameFor(model => model.Rating)
                                 </th>
-                                <th onclick="sortTable(7)">
-                                    @Html.DisplayNameFor(model => model.Coordinates.X)
-                                </th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -49,11 +47,13 @@
                                 {
                                     foreach (var place in Model) //(var place in element.Value)
                                     {
+
                                         if (place.Type == element.Key)
-                                        {
+                                        { 
+                                            
                                             <tr>
                                                 <td>
-                                                    <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)" />
+                                                    <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)/*; workWithMarker(place.Name, place.Lat)*/;" />
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => place.Name)
@@ -75,10 +75,15 @@
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => place.Description)
-                                                    <input type="hidden" name="Lat2" id="lat2" value="@Html.DisplayFor(modelItem => place.Coordinates)">
-                                                    <input type="hidden" name="Long2" id="long2" value="@Html.DisplayFor(modelItem => place.Description)">
                                                 </td>
-
+                    
+                                                <td>
+                                                    <input hidden  value="@Html.DisplayFor(modelItem => place.Latitude)"/>   
+                                                </td>
+                                                <td>
+                                                    <input hidden  value="@Html.DisplayFor(modelItem => place.Longtitude)"/>
+                                                    
+                                                </td>
                                             </tr>
                                         }
 
@@ -194,14 +199,12 @@
 
 <style>
     #map, #map_canvas {
-        width: 1000px;
-        height: 1000px;
+        width: 500px;
+        height: 500px;
     }
 </style>
 
-
-
-<div id="map_canvas"></div>
+<div id="map_canvas" style="width: 1000px; height: 1000px;"></div>
 
 
 <style>
@@ -221,38 +224,10 @@
 </style>
 <br />
 
-<script>
+<div id="map_canvas" style="height: 550px;"></div>
 
 
-
-    var data = [
-        { "Id": 1, "Name": "Kryyivka", "Lat": "49.841303735401844", "Long": "24.032249450683594" },
-        { "Id": 2, "Name": "Opernyi teatr ", "Lat": "49.84404362156558", "Long": "24.026198387145996" },
-        { "Id": 3, "Name": "Vysokyi zamok", "Lat": "49.848222340822105", "Long": "24.03933048248291" },
-        { "Id": 4, "Name": "Universytet Franka", "Lat": "49.8406118203997", "Long": "24.022507667541504" }
-    ];
-
-</script>
-
-<script type="text/javascript">
-
-     @*@foreach (var place in Model)
-    {
-    @:model.push({
-    @:ID: '@place.Id',
-    @:Name: '@place.Name',
-    @:Lat:  @place.Description),
-    @:});
-    }*@
-
-    //$(document).ready(function () {
-    //    initMap();
-    //});
-
-    //function convertCoordsToDouble(LatOrLong) {
-
-    //    LatOrLong = LatOrLong.replace(',', '.');
-    //}
+    <script type="text/javascript">
 
         var myModel = [];
 
@@ -261,60 +236,67 @@
     @:myModel.push({
     @:ID: '@place.Id',
     @:Name: '@place.Name',
-    @:Lat:  '@place.Latitude'),
-    @:Long: '@place.Longtitude'),
+    @:Lat:  '@place.Latitude',
+    @:Long: '@place.Longtitude',
     @:});
     }
+        
+      
+        function initMap() {
 
-    function initMap() {
+            google.maps.visualRefresh = true;
+            var Lviv = new google.maps.LatLng(49.8382600, 24.0232400);
 
-        google.maps.visualRefresh = true;
-        var Lviv = new google.maps.LatLng(49.8382600, 24.0232400);
+            var mapOptions = {
+                zoom: 13,
+                center: Lviv,
+                mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP
+            };
 
-        var mapOptions = {
-            zoom: 13,
-            center: Lviv,
-            mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP
-        };
-     //myModel.ID
-        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-
-        var marker = new google.maps.Marker({
-            'position': new google.maps.LatLng(49.8382600, 24.0232400),
-            'map': map,
-            'title': 1
-        });
-
-
-        $.each(myModel, function (i, item) {
-            var marker = new google.maps.Marker({
-                'position': new google.maps.LatLng(item.Lat, item.Long),
-                'map': map,
-                'title': item.Name
-            });
-
-            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
-
-            var infowindow = new google.maps.InfoWindow({
-                content: "<div class='infoDiv'><h2>" + item.Name + "</div></div>"
-            });
-
-            google.maps.event.addListener(marker, 'click', function () {
-                infowindow.open(map, marker);
-            });
-
-        })
-    }
-
-   
-
-</script>
+            var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
 
 
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
-</script>
+            var data = [
+                { "Id": 1, "Name": "Kryyivka", "Lat": "49.841303735401844", "Long": "24.032249450683594" },
+                { "Id": 2, "Name": "Opernyi teatr ", "Lat": "49.84404362156558", "Long": "24.026198387145996" },
+                { "Id": 3, "Name": "Vysokyi zamok", "Lat": "49.848222340822105", "Long": "24.03933048248291" },
+                { "Id": 4, "Name": "Universytet Franka", "Lat": "49.8406118203997", "Long": "24.022507667541504" }
+            ];
+
+            $.each(myModel, function (i, item) {
+                var marker = new google.maps.Marker({
+                    'position': new google.maps.LatLng(item.Lat, item.Long),
+                    'map': map,
+                    'title': item.Name
+                });
+
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<div class='infoDiv'><h2>" + item.Name + "</div></div>"
+                });
+
+                google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                });
+
+            })
+        }
+
+
+        
+
+
+
+    </script>
+
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tnGRfh4zut21AaOKJpBEGIh7UXJobVM&callback=initMap">
+    </script>
+
+
+
 
 
 
@@ -344,18 +326,43 @@
 
 
 <script type="text/javascript">
+
+
+
+
+    function workWithMarker(name, lat, long) {
+         /*function (i, item)*/ {
+            var marker = new google.maps.Marker({
+                'position': new google.maps.LatLng(lat, long),
+                'map': map,
+                'title': name
+            });
+
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+
+            var infowindow = new google.maps.InfoWindow({
+                content: "<div class='infoDiv'><h2>" + name + "</div></div>"
+            });
+
+            google.maps.event.addListener(marker, 'click', function () {
+                infowindow.open(map, marker);
+            });
+
+        }
+    }
+
     function changePlaceState(paramName) {
         //console.log(paramName.checked);
         if ((paramName.checked == true)) {
 
             // ToDo show on GoogleMaps
             var chB = paramName;
-            workWithMarker(myModel[paramName.id])
+            //workWithMarker(myModel[paramName.id])
             //$("div").text(paramName.name + " checked!");
         } else {
 
             // ToDo get out from google maps
-            workWithMarker(myModel[paramName.id])
+           // workWithMarker(myModel[paramName.id])
             var chB = paramName;
         }
     }
@@ -369,9 +376,11 @@
 
         for (var i = 0; i < checkedB.length; i++) {
             chB += checkedB[i].name;
+
             if (i < checkedB.length - 1) {
                 chB += '*';
             }
+
         }
 
         var tripS = '';
