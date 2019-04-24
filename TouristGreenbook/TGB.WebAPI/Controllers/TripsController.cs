@@ -139,7 +139,8 @@ namespace TGB.WebAPI.Controllers
             var tagedPlaces = new List<Place>();
             foreach (var tag in chosenTags)
             {
-                tagedPlace.Add(tag, (_context.Places.Where(x => x.City == city && x.Type == tag)).ToList());
+                tagedPlace.Add(tag, (_context.Places.Where(x => x.City == city && x.Type == tag
+                                                               && x.State == PlaceState.Сonfirmed)).ToList());
                 tagedPlaces.AddRange(_context.Places.Where(x => x.City == city && x.Type == tag 
                                                                                && x.State == PlaceState.Сonfirmed));
             }

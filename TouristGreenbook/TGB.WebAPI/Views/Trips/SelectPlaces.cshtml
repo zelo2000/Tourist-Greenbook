@@ -13,7 +13,7 @@
                 foreach (var element in ViewBag.TagedPlace)
                 {
                     <table id="table_@element.Key" class="table table-striped table-hover table-condensed">
-                        <thead>
+                        <thead style="background-color: antiquewhite">
                             <tr>
                                 <th>
 
@@ -55,14 +55,14 @@
                                         </a>*@
                                 </th>
                                 <th onclick="sortTable(7)">
-                                    @Html.DisplayNameFor(model => model.Coordinates.X)
+                                    @Html.DisplayNameFor(model => model.Description)
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="background-color: azure">
                             @{
                                 <tr>
-                                    <h3>@element.Key</h3>
+                                    <h3 style="background-color: cornsilk">@element.Key</h3>
                                 </tr>
                                 {
                                     foreach (var place in Model) //(var place in element.Value)
