@@ -28,7 +28,7 @@ namespace TGB.WebAPI.Controllers.Admin
         }
 
         // GET: AdminTrips
-        public async Task<IActionResult> Index(string filter, int page = 1, string sortExpression = "City")
+        public async Task<IActionResult> Index(string filterCity, string filterUser, int page = 1, string sortExpression = "City")
         {
             var qry = _context.Trips;
             var applicationDbContext = qry.Include(t => t.ConcreteUser).AsNoTracking();
@@ -37,16 +37,19 @@ namespace TGB.WebAPI.Controllers.Admin
                 if (item.ConcreteUserId != null)
                 {
                     item.ConcreteUser.Email = _userManager.FindByIdAsync(item.ConcreteUserId).Result.Email;
-
                 }
             }
-            if (!string.IsNullOrWhiteSpace(filter))
+            if (!string.IsNullOrWhiteSpace(filterCity))
             {
-                applicationDbContext = applicationDbContext.Where(p => p.City.Contains(filter));
+                applicationDbContext = applicationDbContext.Where(p => p.City.Contains(filterCity));
+            }
+            if (!string.IsNullOrWhiteSpace(filterUser))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.ConcreteUser.Email.Contains(filterUser));
             }
             var model = await PagingList.CreateAsync(applicationDbContext, 3, page, sortExpression, "City");
             model.RouteValue = new RouteValueDictionary {
-                { "filter", filter}
+                { "filterCity", filterCity}, { "filterUser", filterUser},
             };
             return View(model);
         }

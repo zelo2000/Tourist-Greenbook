@@ -9,7 +9,9 @@
 <h2>Trip</h2>
 
 <form method="get" class="form-inline">
-    <input name="filter" class="form-control" placeholder="city"
+    <input name="filterCity" class="form-control" placeholder="city"
+           value="@Model.RouteValue["Filter"]" />
+    <input name="filterUser" class="form-control" placeholder="user"
            value="@Model.RouteValue["Filter"]" />
     <button type="submit" class="btn btn-info">
         <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
@@ -36,7 +38,7 @@
                 @Html.SortableHeaderFor(model => model.Budget, "Budget", this.Model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ConcreteUserId)
+                @Html.DisplayNameFor(model => model.ConcreteUser.Email)
             </th>
             <th></th>
         </tr>
@@ -58,7 +60,7 @@
                     @Html.DisplayFor(modelItem => item.Budget)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ConcreteUserId)
+                    @Html.DisplayFor(modelItem => item.ConcreteUser.Email)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a> |
