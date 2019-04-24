@@ -16,6 +16,11 @@ namespace TGB.WebAPI.Controllers
             return View();
         }
 
+        public IActionResult ContactUs()
+        {
+            return View();
+        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult AdminView()
         {
