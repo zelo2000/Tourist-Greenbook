@@ -9,6 +9,8 @@
 <form action="/Trips/CreateTrip" method="post">
     <div id="select_places">
         <div id="tags">
+            <h3><b>Choose places for your future trip</b></h3>
+            
             @{
                 foreach (var element in ViewBag.TagedPlace)
                 {
@@ -62,7 +64,7 @@
                         <tbody style="background-color: azure">
                             @{
                                 <tr>
-                                    <h3 style="background-color: cornsilk">@element.Key</h3>
+                                    <h3 style="color:mediumblue"><b>@element.Key</b></h3>
                                 </tr>
                                 {
                                     foreach (var place in Model) //(var place in element.Value)
