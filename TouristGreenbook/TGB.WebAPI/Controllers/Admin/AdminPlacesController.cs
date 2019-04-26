@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 using TGB.WebAPI.Data;
 using TGB.WebAPI.Models;
 
@@ -22,78 +24,31 @@ namespace TGB.WebAPI.Controllers.Admin
         }
 
         // GET: AdminPlaces
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string filterName, string filterType, string filterAddress, string filterCity, int page = 1, string sortExpression = "Name")
         {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "NameDesc" : "";
-            ViewData["TypeSortParm"] = sortOrder == "Type" ? "TypeDesc" : "Type";
-            ViewData["CitySortParm"] = sortOrder == "City" ? "CityDesc" : "City";
-            ViewData["AddressSortParm"] = sortOrder == "Address" ? "AddressDesc" : "Address";
-            ViewData["WorkTimeStartSortParm"] = sortOrder == "WorkTimeStart" ? "WorkTimeStartDesc" : "WorkTimeStart";
-            ViewData["WorkTimeFinishSortParm"] = sortOrder == "WorkTimeFinish" ? "WorkTimeFinishDesc" : "WorkTimeFinish";
-            ViewData["StateSortParm"] = sortOrder == "State" ? "StateDesc" : "State";
-            ViewData["DescriptionSortParm"] = sortOrder == "Description" ? "DescriptionDesc" : "Description";
-            ViewData["RatingSortParm"] = sortOrder == "Rating" ? "RatingDesc" : "Rating";
-            var places = from p in _context.Places
-                        select p;
-            switch (sortOrder)
+            var qry = _context.Places;
+            var applicationDbContext = qry.Include(t => t.Trip).AsNoTracking();
+            if (!string.IsNullOrWhiteSpace(filterName))
             {
-                case "NameDesc":
-                    places = places.OrderByDescending(u => u.Name);
-                    break;
-                case "City":
-                    places = places.OrderBy(s => s.City);
-                    break;
-                case "CityDesc":
-                    places = places.OrderByDescending(u => u.City);
-                    break;
-                case "Rating":
-                    places = places.OrderBy(s => s.Rating);
-                    break;
-                case "RatingDesc":
-                    places = places.OrderByDescending(u => u.Rating);
-                    break;
-                case "Address":
-                    places = places.OrderBy(s => s.Address);
-                    break;
-                case "AddressDesc":
-                    places = places.OrderByDescending(u => u.Address);
-                    break;
-                case "State":
-                    places = places.OrderBy(s => s.State);
-                    break;
-                case "StateDesc":
-                    places = places.OrderByDescending(u => u.State);
-                    break;
-                case "Description":
-                    places = places.OrderBy(s => s.Description);
-                    break;
-                case "DescriptionDesc":
-                    places = places.OrderByDescending(u => u.Description);
-                    break;
-                case "WorkTimeStart":
-                    places = places.OrderBy(s => s.WorkTimeStart);
-                    break;
-                case "WorkTimeStartDesc":
-                    places = places.OrderByDescending(u => u.WorkTimeStart);
-                    break;
-                case "WorkTimeFinish":
-                    places = places.OrderBy(s => s.WorkTimeFinish);
-                    break;
-                case "WorkTimeFinishDesc":
-                    places = places.OrderByDescending(u => u.WorkTimeFinish);
-                    break;
-                case "Type":
-                    places = places.OrderBy(s => s.Type);
-                    break;
-                case "TypeDesc":
-                    places = places.OrderByDescending(u => u.Type);
-                    break;
-                default:
-                    places = places.OrderBy(s => s.Name);
-                    break;
+                applicationDbContext = applicationDbContext.Where(p => p.Name.Contains(filterName));
             }
-            var applicationDbContext = places.Include(p => p.Trip);
-            return View(await applicationDbContext.ToListAsync());
+            if (!string.IsNullOrWhiteSpace(filterType))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.Type.Contains(filterType));
+            }
+            if (!string.IsNullOrWhiteSpace(filterCity))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.City.Contains(filterCity));
+            }
+            if (!string.IsNullOrWhiteSpace(filterAddress))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.Address.Contains(filterAddress));
+            }
+            var model = await PagingList.CreateAsync(applicationDbContext, 3, page, sortExpression, "Name");
+            model.RouteValue = new RouteValueDictionary {
+                { "filterName", filterName}, { "filterType", filterType}, { "filterCity", filterCity}, { "filterAddress", filterAddress}
+            };
+            return View(model);
         }
 
         // GET: AdminPlaces/Details/5

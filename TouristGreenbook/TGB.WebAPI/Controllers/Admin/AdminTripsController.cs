@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 using TGB.WebAPI.Data;
 using TGB.WebAPI.Models;
 
@@ -26,51 +28,30 @@ namespace TGB.WebAPI.Controllers.Admin
         }
 
         // GET: AdminTrips
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string filterCity, string filterUser, int page = 1, string sortExpression = "City")
         {
-            ViewData["CitySortParm"] = String.IsNullOrEmpty(sortOrder) ? "CityDesc" : "";
-            ViewData["StayTimeStartSortParm"] = sortOrder == "StayTimeStart" ? "StayTimeStartDesc" : "StayTimeStart";
-            ViewData["StayTimeFinishSortParm"] = sortOrder == "StayTimeFinish" ? "StayTimeFinishDesc" : "StayTimeFinish";
-            ViewData["BudgetSortParm"] = sortOrder == "Budget" ? "BudgetDesc" : "Budget";
-            var trips = from t in _context.Trips
-                        select t;
-            switch (sortOrder)
-            {
-                case "CityDesc":
-                    trips = trips.OrderByDescending(u => u.City);
-                    break;
-                case "StayTimeStart":
-                    trips = trips.OrderBy(s => s.StayTimeStart);
-                    break;
-                case "StayTimeStartDesc":
-                    trips = trips.OrderByDescending(s => s.StayTimeStart);
-                    break;
-                case "StayTimeFinish":
-                    trips = trips.OrderBy(s => s.StayTimeFinish);
-                    break;
-                case "StayTimeFinishDesc":
-                    trips = trips.OrderByDescending(s => s.StayTimeFinish);
-                    break;
-                case "Budget":
-                    trips = trips.OrderBy(s => s.Budget);
-                    break;
-                case "BudgetDesc":
-                    trips = trips.OrderByDescending(s => s.Budget);
-                    break;
-                default:
-                    trips = trips.OrderBy(s => s.City);
-                    break;
-            }
-            var applicationDbContext = trips.Include(t => t.ConcreteUser).ToList();
+            var qry = _context.Trips;
+            var applicationDbContext = qry.Include(t => t.ConcreteUser).AsNoTracking();
             foreach (var item in applicationDbContext)
             {
                 if (item.ConcreteUserId != null)
                 {
                     item.ConcreteUser.Email = _userManager.FindByIdAsync(item.ConcreteUserId).Result.Email;
-
                 }
             }
-            return View(applicationDbContext);
+            if (!string.IsNullOrWhiteSpace(filterCity))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.City.Contains(filterCity));
+            }
+            if (!string.IsNullOrWhiteSpace(filterUser))
+            {
+                applicationDbContext = applicationDbContext.Where(p => p.ConcreteUser.Email.Contains(filterUser));
+            }
+            var model = await PagingList.CreateAsync(applicationDbContext, 3, page, sortExpression, "City");
+            model.RouteValue = new RouteValueDictionary {
+                { "filterCity", filterCity}, { "filterUser", filterUser},
+            };
+            return View(model);
         }
 
         // GET: AdminTrips/Details/5

@@ -15,6 +15,10 @@ namespace TGB.WebAPI.Models
         /// List of user trips
         /// </summary>
         List<Trip> Trips { get; set; }
+        ///// <summary>
+        ///// Path to the profile image
+        ///// </summary>
+        //private string ImgUrl { get; set; }
 
         public ConcreteUser()
         {

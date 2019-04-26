@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "AdminView";
+}
+
+<h2>Admin Page</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    <h4><a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="btn btn-primary">Manage your account</a></h4>
+    <h4><a asp-area="" asp-controller="Role" asp-action="Index" class="btn btn-primary">Manage Roles</a></h4>
+    <h4><a asp-area="" asp-controller="Users" asp-action="Index" class="btn btn-primary">Manage Users</a></h4>
+    <h4><a asp-area="" asp-controller="AdminPlaces" asp-action="Index" class="btn btn-primary">Manage Places</a></h4>
+    <h4><a asp-area="" asp-controller="AdminTrips" asp-action="Index" class="btn btn-primary">Manage Trips</a></h4>
+}

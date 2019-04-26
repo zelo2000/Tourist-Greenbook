@@ -1,21 +1,38 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+﻿@model ReflectionIT.Mvc.Paging.PagingList<Microsoft.AspNetCore.Identity.IdentityUser>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <h2>Users</h2>
 
+<form method="get" class="form-inline">
+    <input name="filterName" class="form-control" placeholder="username"
+           value="@Model.RouteValue["Filter"]" />
+    <input name="filterEmail" class="form-control" placeholder="email"
+           value="@Model.RouteValue["Filter"]" />
+    <button type="submit" class="btn btn-info">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+    </button>
+</form>
+
+<nav aria-label="Suppliers navigation example">
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+
 <table class="table">
     <thead>
-        <tr>
+        <tr class="active">
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["UserNameSortParm"]">@Html.DisplayNameFor(model => model.UserName)</a>
+                @Html.SortableHeaderFor(model => model.UserName, "UserName", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]">@Html.DisplayNameFor(model => model.Email)</a>
+                @Html.SortableHeaderFor(model => model.Email, "Email", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PhoneNumberSortParm"]">@Html.DisplayNameFor(model => model.PhoneNumber)</a>
+                @Html.SortableHeaderFor(model => model.PhoneNumber, "PhoneNumber", this.Model)
             </th>
             <th></th>
         </tr>
@@ -23,7 +40,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr class="active">
                 <td>
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
@@ -34,11 +51,10 @@
                     @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit Role</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit Role</a> |
                     @if (item.UserName != User.Identity.Name)
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                     }
                 </td>
             </tr>
@@ -46,3 +62,10 @@
     </tbody>
 </table>
 
+<nav aria-label="Suppliers navigation example">
+    <vc:pager paging-list="@Model" />
+</nav>
+
+<div>
+    <a asp-controller="Home" asp-action="AdminView" class="btn btn-default">Back to List</a>
+</div>

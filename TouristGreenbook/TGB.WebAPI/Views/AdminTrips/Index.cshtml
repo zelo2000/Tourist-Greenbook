@@ -1,28 +1,41 @@
-﻿@model IEnumerable<TGB.WebAPI.Models.Trip>
+﻿@model ReflectionIT.Mvc.Paging.PagingList<TGB.WebAPI.Models.Trip>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Trip</h2>
 
-@*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
+<form method="get" class="form-inline">
+    <input name="filterCity" class="form-control" placeholder="city"
+           value="@Model.RouteValue["Filter"]" />
+    <input name="filterUser" class="form-control" placeholder="user"
+           value="@Model.RouteValue["Filter"]" />
+    <button type="submit" class="btn btn-info">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+    </button>
+</form>
+
+<nav aria-label="Suppliers navigation example">
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+
 <table class="table">
     <thead>
-        <tr>
+        <tr class="active">
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CitySortParm"]">@Html.DisplayNameFor(model => model.City)</a>
+                @Html.SortableHeaderFor(model => model.City, "City", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["StayTimeStartSortParm"]">@Html.DisplayNameFor(model => model.StayTimeStart)</a>
+                @Html.SortableHeaderFor(model => model.StayTimeStart, "StayTimeStart", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["StayTimeFinishSortParm"]">@Html.DisplayNameFor(model => model.StayTimeFinish)</a>
+                @Html.SortableHeaderFor(model => model.StayTimeFinish, "StayTimeFinish", this.Model)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BudgetSortParm"]">@Html.DisplayNameFor(model => model.Budget)</a>
+                @Html.SortableHeaderFor(model => model.Budget, "Budget", this.Model)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ConcreteUser.Email)
@@ -31,28 +44,36 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StayTimeStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StayTimeFinish)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Budget)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConcreteUser.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr class="active">
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StayTimeStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StayTimeFinish)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Budget)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ConcreteUser.Email)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<nav aria-label="Suppliers navigation example">
+    <vc:pager paging-list="@Model" />
+</nav>
+
+<div>
+    <a asp-controller="Home" asp-action="AdminView" class="btn btn-default">Back to List</a>
+</div>
