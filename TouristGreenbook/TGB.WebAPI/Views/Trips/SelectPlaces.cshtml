@@ -69,11 +69,11 @@
                                 {
                                     foreach (var place in Model) //(var place in element.Value)
                                     {
-                                        if (place.Type == element.Key)
+                                        if (place.Type == element.Key)   //displayMarkers(@place.Id);
                                         {
                                             <tr>
                                                 <td>
-                                                    <input type="checkbox" name="@place.Id" onclick="changePlaceState(this)" />
+                                                    <input type="checkbox" name="@place.Id" onclick="changePlaceState(this, @place.Id); " />
                                                 </td>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => place.Name)
@@ -111,78 +111,7 @@
                 }
             }
 
-            @*<table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                <input type="checkbox" name="selectAll" />
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Name)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Type)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Address)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WorkTimeStart)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WorkTimeFinish)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Rating)
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (var element in ViewBag.TagedPlace)
-                            {
-                                <tr>
-                                    <h3>@element.Key</h3>
-                                </tr>
-                                {
-                                    foreach (var place in Model) //(var place in element.Value)
-                                    {
-                                        if (place.Type==element.Key)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    <input type="checkbox" name="@place.GetHashCode()" />
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => place.Name)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => place.Type)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => place.Address)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => place.WorkTimeStart)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => place.WorkTimeFinish)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => place.Rating)
-                                                </td>
-                                            </tr>
-                                        }
-
-
-                                    }
-                                }
-
-                            }
-                        }
-                    </tbody>
-                </table>*@
-            @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces" />*@
+          
 
         </div>
         @*<input class="btn btn-light" type="submit" value="Create Trip" name="submit" onclick="getCheckedPlaces()" />*@
@@ -241,38 +170,10 @@
 </style>
 <br />
 
-<script>
 
-
-
-    var data = [
-        { "Id": 1, "Name": "Kryyivka", "Lat": "49.841303735401844", "Long": "24.032249450683594" },
-        { "Id": 2, "Name": "Opernyi teatr ", "Lat": "49.84404362156558", "Long": "24.026198387145996" },
-        { "Id": 3, "Name": "Vysokyi zamok", "Lat": "49.848222340822105", "Long": "24.03933048248291" },
-        { "Id": 4, "Name": "Universytet Franka", "Lat": "49.8406118203997", "Long": "24.022507667541504" }
-    ];
-
-</script>
 
 <script type="text/javascript">
 
-     @*@foreach (var place in Model)
-    {
-    @:model.push({
-    @:ID: '@place.Id',
-    @:Name: '@place.Name',
-    @:Lat:  @place.Description),
-    @:});
-    }*@
-
-    //$(document).ready(function () {
-    //    initMap();
-    //});
-
-    //function convertCoordsToDouble(LatOrLong) {
-
-    //    LatOrLong = LatOrLong.replace(',', '.');
-    //}
 
         var myModel = [];
 
@@ -285,35 +186,31 @@
     @:Long: '@place.Longtitude',
     @:});
     }
-
+    var markers = [];
     function initMap() {
 
         google.maps.visualRefresh = true;
         var Lviv = new google.maps.LatLng(49.8382600, 24.0232400);
 
         var mapOptions = {
-            zoom: 13,
+            zoom: 15,
             center: Lviv,
             mapTypeId: google.maps.MapTypeId.G_NORMAL_MAP
         };
      //myModel.ID
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-        var marker = new google.maps.Marker({
-            'position': new google.maps.LatLng(49.8382600, 24.0232400),
-            'map': map,
-            'title': 1
-        });
-
-
         $.each(myModel, function (i, item) {
             var marker = new google.maps.Marker({
                 'position': new google.maps.LatLng(item.Lat, item.Long),
                 'map': map,
-                'title': item.Name
+                'title': item.Name,
+                'id': item.ID,
+                visible: false
             });
+            markers.push(marker);
 
-            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+            
 
             var infowindow = new google.maps.InfoWindow({
                 content: "<div class='infoDiv'><h2>" + item.Name + "</div></div>"
@@ -325,7 +222,6 @@
 
         })
     }
-
    
 
 </script>
@@ -364,19 +260,35 @@
 
 
 <script type="text/javascript">
-    function changePlaceState(paramName) {
+    function changePlaceState(paramName, placeId) {
         //console.log(paramName.checked);
         if ((paramName.checked == true)) {
-
             // ToDo show on GoogleMaps
             var chB = paramName;
-            workWithMarker(myModel[paramName.id])
-            //$("div").text(paramName.name + " checked!");
+
+            for (i = 0; i < markers.length; i++) {
+                if (markers[i].id == placeId) {
+
+                    markers[i].setVisible(true);
+                }
+                
+            }
+
+
+            
         } else {
 
             // ToDo get out from google maps
-            workWithMarker(myModel[paramName.id])
+            //workWithMarker(myModel[paramName.id])
             var chB = paramName;
+            for (i = 0; i < markers.length; i++) {
+                if (markers[i].id == placeId) {
+
+                    markers[i].setVisible(false);
+                }
+
+            }
+           
         }
     }
 </script>
